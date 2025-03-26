@@ -29,8 +29,8 @@
             display: grid;
             grid-template-columns: 100%;
             /* Make the center panel take full width */
-            gap: 20px;
-            padding: 20px;
+            gap: 0;
+            padding: 0;
         }
 
         .qa-layout {
@@ -40,22 +40,19 @@
         }
 
         .left-panel {
-            width: 30%;
+            width: 35%;
             /* Adjust as needed */
-            padding: 20px;
+            padding: 5px;
             /* Optional padding */
         }
 
         .center-panel {
             width: 100%;
             /* Adjust as needed */
-            padding: 20px;
+            padding: 10px;
+            padding-bottom: 0px;
             /* Optional padding */
-            overflow-y: auto;
-            /* Enable vertical scrolling */
-            height: calc(100vh - 80px);
-            /* Adjust height to fit within the viewport */
-            border-left: 1px solid #ccc;
+            border-left: 0.5px solid #ccc;
             /* Optional border for separation */
         }
 
@@ -189,7 +186,7 @@
             width: 250px;
             background-color: #2a3135;
             /* Blue shade */
-            padding: 20px;
+            padding: 15px 20px;
         }
 
         .sidebar h2 {
@@ -218,7 +215,8 @@
         .content {
             margin-left: 260px;
             /* Adjust for sidebar width */
-            padding: 20px;
+            padding: 0;
+            padding-top: 20px;
         }
 
         .tab-content {
@@ -235,138 +233,193 @@
         .tab.active {
             display: block;
         }
+
+        #qa-container {
+            height: calc(100vh - 250px);
+            overflow-y: auto;
+        }
+
+        /* #scroll_upload_tab {
+            height: calc(100vh - 20px);
+            overflow-y: auto;
+        } */
+
+        #scroll_graph {
+            height: calc(100vh - 220px);
+            overflow-y: auto;
+        }
+
+        #scroll_sent {
+            height: calc(100vh - 220px);
+            overflow-y: auto;
+        }
+
+        .navbar {
+            background-color: #2a3135;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .navbar a {
+            color: white;
+            /* White text */
+            text-decoration: none;
+            /* padding: 14px 20px; */
+            display: block;
+        }
+
+        .logo {
+            margin-right: 20px;
+            /* Space between logo and links */
+        }
     </style>
 </head>
 
 <body>
-    <div class="sidebar">
-        <h2>Earnings Call Summary</h2>
-        <button class="btn" id="upload-file-tab">Upload a File</button>
-        <button class="btn" id="generate-summary-tab">Generate Summary</button>
-        <button class="btn" id="graph-tab">Graph</button>
-        <button class="btn" id="sentiment-analysis-tab">Sentiment Analysis</button>
-        <button class="btn" id="qa-tab">Q & A</button>
-    </div>
+    <nav class="navbar navbar-expand-lg">
+        <a class="navbar-brand" href="index.html">
+            <img src="https://www.google.com/u/0/ac/images/logo.gif?uid=108567007302598457471&service=google_gsuite"
+                width="72px" height="36px" alt="Straive Logo" class="logo">
+        </a>
+    </nav>
 
-    <div class="content">
-        <div class="layout-container">
-            <!-- Center Panel -->
-            <div class="center-panel">
-                <!-- Upload Files Section -->
-                <div id="upload-file-content" class="tab active">
-                    <h4>Upload Files</h4>
-                    <h6>Upload either an Earning Call Transcript pdf file or an Earning Call Transcript audio file</h6>
-                    <br><br>
-                    <div class="mb-3">
-                        <label class="form-label">PDF File</label>
-                        <input type="file" class="form-control" id="contract-file" accept=".pdf" />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Audio File</label>
-                        <input type="file" class="form-control" id="audio-file" accept="audio/*" />
-                    </div>
-                    <div class="pdf-list" id="pdf-list"></div>
-                </div>
-                <!-- Generate Summary Button -->
-                <div id="generate-summary-content" class="tab">
-                    <h5>Click on Generate to generate the Summary, Graph and Sentiments</h5>
-                    <br>
-                    <button class="btn btn-secondary" id="generate-summary"
-                        style="width: 200px; display: block; margin-left: auto; margin-right: auto; text-align: center;">Generate</button>
-                </div>
+    <body>
+        <div class="sidebar">
+            <br><br>
+            <h2>Earnings Call Summary</h2>
+            <button class="btn" id="generate-summary-tab">Generate Summary</button>
+            <button class="btn" id="graph-tab">Sentiment Graph</button>
+            <button class="btn" id="sentiment-analysis-tab">Sentiment Analysis</button>
+            <button class="btn" id="qa-tab">Q & A</button>
+        </div>
 
-                <!-- Summary Section -->
-                <div id="summary-container" class="mb-4 tab">
-                    <br><br>
-                    <div class="card">
-                        <div class="card-header" style="text-align: center;">
-                            <h3>Summary</h3>
+        <div class="content">
+            <div class="layout-container">
+                <!-- Center Panel -->
+                <div class="center-panel">
+                    <!-- <div id="scroll_upload_tab"> -->
+                    <!-- Generate Summary Content -->
+                    <div id="generate-summary-content" class="tab active">
+                        <h5>Upload a File and Click on Generate to generate the Summary, Graph and Sentiments</h5>
+                        <br>
+                        <!-- Moved Upload Files Section Here -->
+                        <div class="mb-3">
+                            <label class="form-label">PDF File</label>
+                            <input type="file" class="form-control" id="contract-file" accept=".pdf" />
                         </div>
-                        <div class="card-body">
-                            <div id="summary-loading" class="loading" style="display: none;">
-                                <div class="spinner-border text-primary" role="status">
-                                    <span class="visually-hidden">Loading...</span>
-                                </div>
-                                <p>Generating summary...</p>
+                        <div class="mb-3">
+                            <label class="form-label">Audio File</label>
+                            <input type="file" class="form-control" id="audio-file" accept="audio/*" />
+                        </div>
+                        <div class="pdf-list" id="pdf-list"></div>
+                        <br>
+                        <button class="btn btn-primary" id="generate-summary"
+                            style="width: 200px; display: block; margin-left: auto; margin-right: auto; text-align: center;">Generate</button>
+                    </div>
+
+                    <!-- Summary Section -->
+                    <div id="summary-container" class="mb-4 tab" style="display: block;">
+                        <br><br>
+                        <div class="card">
+                            <div class="card-header" style="text-align: center;">
+                                <h3>Summary</h3>
                             </div>
-                            <div id="summary-content"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Analysis Section -->
-                <div id="analysis-container" class="mb-4 tab">
-                    <div class="card">
-                        <div class="card-header" style="text-align: center;">
-                            <h3>Graph</h3>
-                        </div>
-                        <div class="card-body">
-                            <div id="analysis-loading" class="loading" style="display: none;">
-                                <div class="spinner-border text-primary" role="status">
-                                    <span class="visually-hidden">Loading...</span>
+                            <div class="card-body">
+                                <div id="summary-loading" class="loading" style="display: none;">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                    <p>Generating summary...</p>
                                 </div>
-                                <p>Generating analysis...</p>
-                            </div>
-                            <div id="analysis-content"></div>
-                            <div id="describe-content"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Sentiment Analysis Section -->
-                <div id="sentiment-analysis-container" class="mb-4 tab">
-                    <div class="card">
-                        <div class="card-header" style="text-align: center;">
-                            <h3>Sentiment Analysis</h3>
-                        </div>
-                        <div class="card-body">
-                            <div id="sentiment-loading" class="loading" style="display: none;">
-                                <div class="spinner-border text-primary" role="status">
-                                    <span class="visually-hidden">Loading...</span>
-                                </div>
-                                <p>Analyzing sentiment...</p>
-                            </div>
-                            <div id="sentiment-content"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Q&A Section -->
-                <div id="qa-content" class="tab">
-                    <div class="qa-layout">
-                        <!-- Left Panel -->
-                        <div class="left-panel">
-                            <div class="chat-container">
-                                <h4 class="mt-4">Ask Questions</h4>
-                                <div class="chat-input mb-3">
-                                    <textarea class="form-control mb-2" id="user-question"
-                                        placeholder="Ask a question..."></textarea>
-                                    <button class="btn btn-primary" id="ask-question">Ask Question</button>
-                                </div>
-                                <div class="sample-questions">
-                                    <h5 class="mb-2">Sample Questions</h5>
-                                    <select class="form-select" id="sample-questions">
-                                        <option value="">Select a sample question</option>
-                                    </select>
-                                </div>
+                                <div id="summary-content"></div>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Center Panel -->
-                        <div class="center-panel">
-                            <div class="card" id="qa-section">
-                                <div class="card-header" style="text-align: center;">
-                                    <h3>Questions & Answers</h3>
-                                </div>
-                                <div class="card-body">
-                                    <div id="qa-container"></div>
-                                    <div id="qa-loading" class="loading" style="display: none;">
+
+                    <!-- Analysis Section -->
+                    <div id="analysis-container" class="mb-4 tab">
+                        <div class="card">
+                            <div class="card-header" style="text-align: center;">
+                                <h3>Sentiment Graph</h3>
+                            </div>
+                            <div class="card-body">
+                                <div id="scroll_graph">
+                                    <div id="analysis-loading" class="loading" style="display: none;">
                                         <div class="spinner-border text-primary" role="status">
                                             <span class="visually-hidden">Loading...</span>
                                         </div>
-                                        <p>Generating answer...</p>
+                                        <p>Generating analysis...</p>
                                     </div>
-                                    <button class="btn btn-secondary" id="download-qa">Download Q&A</button>
+                                    <div id="analysis-content"></div>
+                                    <div id="describe-content"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sentiment Analysis Section -->
+                    <div id="sentiment-analysis-container" class="mb-4 tab">
+                        <div class="card">
+                            <div class="card-header" style="text-align: center;">
+                                <h3>Sentiment Analysis</h3>
+                            </div>
+                            <div class="card-body">
+                                <div id="scroll_sent">
+                                    <div id="sentiment-loading" class="loading" style="display: none;">
+                                        <div class="spinner-border text-primary" role="status">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
+                                        <p>Analyzing sentiment...</p>
+                                    </div>
+                                    <div id="sentiment-content"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Q&A Section -->
+                    <div id="qa-content" class="tab">
+                        <div class="qa-layout">
+                            <!-- Left Panel -->
+                            <div class="left-panel">
+                                <div class="chat-container">
+                                    <h4 class="mt-4">Ask Questions</h4>
+                                    <div class="chat-input mb-3">
+                                        <textarea class="form-control mb-2" id="user-question"
+                                            placeholder="Ask a question..." rows="6"></textarea>
+                                        <button class="btn btn-primary" id="ask-question">Ask Question</button>
+                                    </div>
+                                    <div class="sample-questions">
+                                        <h5 class="mb-2">Sample Questions</h5>
+                                        <select class="form-select" id="sample-questions">
+                                            <option value="">Select a sample question</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Center Panel -->
+                            <div class="center-panel">
+                                <div class="card" id="qa-section">
+                                    <div class="card-header" style="text-align: center;">
+                                        <h3>Questions & Answers</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="qa-container"></div>
+                                        <div id="qa-loading" class="loading" style="display: none;">
+                                            <div class="spinner-border text-primary" role="status">
+                                                <span class="visually-hidden">Loading...</span>
+                                            </div>
+                                            <p>Generating answer...</p>
+                                        </div>
+                                        <button class="btn btn-secondary" id="download-qa">Download Q&A</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -374,349 +427,349 @@
                 </div>
             </div>
         </div>
-    </div>
 
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" type="module"></script>
-    <script src='https://cdn.jsdelivr.net/gh/FThompson/FormPersistence.js@2.0.6/form-persistence.min.js'></script>
-    <script src="https://cdn.jsdelivr.net/npm/@gramex/ui@0.3/dist/dark-theme.js" type="module"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script>
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            type="module"></script>
+        <script src='https://cdn.jsdelivr.net/gh/FThompson/FormPersistence.js@2.0.6/form-persistence.min.js'></script>
+        <script src="https://cdn.jsdelivr.net/npm/@gramex/ui@0.3/dist/dark-theme.js" type="module"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+        <script>
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
-        // Function to set light theme
-        function setLightTheme() {
-            document.documentElement.setAttribute('data-bs-theme', 'light');
-            updateThemeButtons('light');
-        }
+            // Function to set light theme
+            function setLightTheme() {
+                document.documentElement.setAttribute('data-bs-theme', 'light');
+                updateThemeButtons('light');
+            }
 
-        // Function to set dark theme
-        function setDarkTheme() {
-            document.documentElement.setAttribute('data-bs-theme', 'dark');
-            updateThemeButtons('dark');
-        }
+            // Function to set dark theme
+            function setDarkTheme() {
+                document.documentElement.setAttribute('data-bs-theme', 'dark');
+                updateThemeButtons('dark');
+            }
 
-        // Function to update theme button active states
-        function updateThemeButtons(activeTheme) {
-            const themeButtons = document.querySelectorAll('[data-bs-theme-value]');
-            themeButtons.forEach(button => {
-                if (button.getAttribute('data-bs-theme-value') === activeTheme) {
-                    button.classList.add('active');
-                } else {
-                    button.classList.remove('active');
-                }
-            });
-        }
-
-        // Event listeners for theme buttons
-        document.addEventListener('DOMContentLoaded', () => {
-            const themeButtons = document.querySelectorAll('[data-bs-theme-value]');
-
-            themeButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    const theme = button.getAttribute('data-bs-theme-value');
-
-                    switch (theme) {
-                        case 'light':
-                            setLightTheme();
-                            break;
-                        case 'dark':
-                            setDarkTheme();
-                            break;
-                        case 'auto':
-                            // Remove theme attribute to use system preference
-                            document.documentElement.removeAttribute('data-bs-theme');
-                            updateThemeButtons('auto');
-                            break;
+            // Function to update theme button active states
+            function updateThemeButtons(activeTheme) {
+                const themeButtons = document.querySelectorAll('[data-bs-theme-value]');
+                themeButtons.forEach(button => {
+                    if (button.getAttribute('data-bs-theme-value') === activeTheme) {
+                        button.classList.add('active');
+                    } else {
+                        button.classList.remove('active');
                     }
                 });
+            }
+
+            // Event listeners for theme buttons
+            document.addEventListener('DOMContentLoaded', () => {
+                const themeButtons = document.querySelectorAll('[data-bs-theme-value]');
+
+                themeButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        const theme = button.getAttribute('data-bs-theme-value');
+
+                        switch (theme) {
+                            case 'light':
+                                setLightTheme();
+                                break;
+                            case 'dark':
+                                setDarkTheme();
+                                break;
+                            case 'auto':
+                                // Remove theme attribute to use system preference
+                                document.documentElement.removeAttribute('data-bs-theme');
+                                updateThemeButtons('auto');
+                                break;
+                        }
+                    });
+                });
+
+                // Set light theme by default
+                setLightTheme();
             });
 
-            // Set light theme by default
-            setLightTheme();
-        });
-
-        //Handle Tab Switching
-        document.getElementById('upload-file-tab').addEventListener('click', function () {
-            hideAllTabs();
-            document.getElementById('upload-file-content').classList.add('active');
-        });
-
-        document.getElementById('generate-summary-tab').addEventListener('click', function () {
-            hideAllTabs();
-            document.getElementById('summary-container').style.display = 'block';
-            document.getElementById('generate-summary-content').classList.add('active');
-            document.getElementById('summary-container').classList.add('active');
-        });
-
-        document.getElementById('graph-tab').addEventListener('click', function () {
-            hideAllTabs();
-            document.getElementById('analysis-container').classList.add('active');
-        });
-
-        document.getElementById('sentiment-analysis-tab').addEventListener('click', function () {
-            hideAllTabs();
-            document.getElementById('sentiment-analysis-container').classList.add('active');
-        });
-
-        document.getElementById('qa-tab').addEventListener('click', function () {
-            hideAllTabs();
-            document.getElementById('qa-content').classList.add('active');
-            document.getElementById('qa-section').classList.add('active');
-        });
-
-        function hideAllTabs() {
-            document.getElementById('summary-container').style.display = 'none';
-            const tabs = document.querySelectorAll('.tab');
-            tabs.forEach(tab => {
-                tab.classList.remove('active');
+            // Handle Tab Switching
+            document.getElementById('generate-summary-tab').addEventListener('click', function () {
+                hideAllTabs();
+                // document.getElementById('scroll_upload_tab').style.display = 'block';
+                document.getElementById('summary-container').style.display = 'block';
+                document.getElementById('generate-summary-content').classList.add('active');
             });
-        }
 
-        let uploadedFiles = [];
-        let uploadedAudioFiles = [];
+            document.getElementById('graph-tab').addEventListener('click', function () {
+                hideAllTabs();
+                document.getElementById('analysis-container').classList.add('active');
+            });
 
-        function displayPDFList() {
-            const pdfList = document.getElementById('pdf-list');
-            pdfList.innerHTML = '';
+            document.getElementById('sentiment-analysis-tab').addEventListener('click', function () {
+                hideAllTabs();
+                document.getElementById('sentiment-analysis-container').classList.add('active');
+            });
 
-            uploadedFiles.forEach((file, index) => {
-                const item = document.createElement('div');
-                item.className = 'pdf-item';
-                item.innerHTML = `
+            document.getElementById('qa-tab').addEventListener('click', function () {
+                hideAllTabs();
+                document.getElementById('qa-content').classList.add('active');
+                document.getElementById('qa-section').classList.add('active');
+            });
+
+            function hideAllTabs() {
+                // document.getElementById('scroll_upload_tab').style.display = 'none';
+                document.getElementById('summary-container').style.display = 'none';
+                const tabs = document.querySelectorAll('.tab');
+                tabs.forEach(tab => {
+                    tab.classList.remove('active');
+                });
+            }
+
+            let uploadedFiles = [];
+            let uploadedAudioFiles = [];
+
+            function displayPDFList() {
+                const pdfList = document.getElementById('pdf-list');
+                pdfList.innerHTML = '';
+
+                uploadedFiles.forEach((file, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'pdf-item';
+                    item.innerHTML = `
             <input type="checkbox" id="pdf-${index}" checked class="form-check-input me-2">
             <label for="pdf-${index}">${file.name}</label>
         `;
-                pdfList.appendChild(item);
-            });
-        }
-
-        let previousQuestions = [];
-
-        function getSelectedPDFs() {
-            const checkboxes = document.querySelectorAll('.pdf-item input[type="checkbox"]');
-            return Array.from(checkboxes)
-                .filter(cb => cb.checked)
-                .map(cb => {
-                    const index = parseInt(cb.id.split('-')[1]);
-                    return uploadedFiles[index];
+                    pdfList.appendChild(item);
                 });
-        }
-
-        async function loadSampleQuestions() {
-            const response = await fetch('questions.json');
-            const data = await response.json();
-            const select = document.getElementById('sample-questions');
-
-            Object.entries(data).forEach(([category, questions]) => {
-                questions.forEach(question => {
-                    const option = document.createElement('option');
-                    option.value = question;
-                    option.textContent = question;
-                    select.appendChild(option);
-                });
-            });
-        }
-
-        async function downloadQA() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-
-            const qaContainer = document.getElementById('qa-container');
-            const qaItems = qaContainer.getElementsByClassName('question-answer');
-
-            let yPosition = 20;
-            const lineHeight = 7;
-            const margin = 20;
-            const pageWidth = doc.internal.pageSize.getWidth();
-            const pageHeight = doc.internal.pageSize.getHeight();
-
-            Array.from(qaItems).forEach((item) => {
-                const question = item.querySelector('.question').textContent;
-                const answer = item.querySelector('.answer').textContent;
-
-                // Calculate heights for question and answer
-                const questionLines = doc.splitTextToSize(question, pageWidth - 2 * margin);
-                const answerLines = doc.splitTextToSize(answer, pageWidth - 2 * margin);
-                const questionHeight = lineHeight * questionLines.length;
-                const answerHeight = lineHeight * answerLines.length;
-                const totalHeight = questionHeight + answerHeight + (2 * lineHeight); // Extra spacing
-
-                // Check if content will fit on current page
-                if (yPosition + totalHeight > pageHeight - margin) {
-                    doc.addPage();
-                    yPosition = 20; // Reset yPosition for new page
-                }
-
-                // Add question with styling
-                doc.setFont('helvetica', 'bold');
-                doc.text('Q:', margin, yPosition);
-                doc.setFont('helvetica', 'normal');
-                doc.setFontSize(14);
-                doc.text(questionLines, margin + 10, yPosition);
-                yPosition += questionHeight + lineHeight;
-
-                // Add answer with styling
-                doc.setFont('helvetica', 'bold');
-                doc.text('A:', margin, yPosition);
-                doc.setFont('helvetica', 'normal');
-                doc.setFontSize(12);
-                doc.text(answerLines, margin + 10, yPosition);
-                yPosition += answerHeight + lineHeight;
-            });
-
-            doc.save('questions-and-answers.pdf');
-        }
-
-        document.getElementById('contract-file').addEventListener('change', (event) => {
-            uploadedFiles = Array.from(event.target.files);
-            displayPDFList();
-        });
-
-        document.getElementById('generate-summary').addEventListener('click', async () => {
-            const selectedFiles = getSelectedPDFs();
-            const audioInput = document.getElementById('audio-file');
-            if (selectedFiles.length > 0 || audioInput.files.length > 0) {
-                await generateSummary();
-                await generateHeatmap();
-                await analyzeSentiment();
-            } else {
-                alert('Please select at least one PDF or audio file');
             }
-        });
 
-        document.getElementById('ask-question').addEventListener('click', async () => {
-            const question = document.getElementById('user-question').value;
-            if (question.trim()) {
-                const answer = await handleQuestionClick(question);
-                //addQuestionAnswer(question, answer);
-                document.getElementById('user-question').value = '';
+            let previousQuestions = [];
+
+            function getSelectedPDFs() {
+                const checkboxes = document.querySelectorAll('.pdf-item input[type="checkbox"]');
+                return Array.from(checkboxes)
+                    .filter(cb => cb.checked)
+                    .map(cb => {
+                        const index = parseInt(cb.id.split('-')[1]);
+                        return uploadedFiles[index];
+                    });
             }
-        });
 
-        document.getElementById('sample-questions').addEventListener('change', async (e) => {
-            if (e.target.value) {
-                const answer = await handleQuestionClick(e.target.value);
-                //addQuestionAnswer(e.target.value, answer);
-                e.target.value = '';
-            }
-        });
-
-        // document.getElementById('analyze-sentiment').addEventListener('click', async () => {
-        //     const selectedFiles = getSelectedPDFs();
-        //     const audioInput = document.getElementById('audio-file');
-        //     if (selectedFiles.length == 1 || audioInput.files.length == 1) {
-        //         await analyzeSentiment();
-        //     } else {
-        //         alert('Please select only one PDF or audio file');
-        //     }
-        // });
-
-        document.getElementById('download-qa').addEventListener('click', downloadQA);
-
-        async function extractTextFromPDF(file) {
-            return new Promise(async (resolve) => {
-                const arrayBuffer = await file.arrayBuffer();
-                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-                let fullText = '';
-
-                for (let i = 1; i <= pdf.numPages; i++) {
-                    const page = await pdf.getPage(i);
-                    const textContent = await page.getTextContent();
-                    const pageText = textContent.items.map(item => item.str).join(' ');
-                    fullText += pageText + ' ';
-                }
-
-                resolve({
-                    filename: file.name,
-                    content: fullText
-                });
-            });
-        }
-
-        // document.getElementById('generate-heatmap').addEventListener('click', async () => {
-        //     const selectedFiles = getSelectedPDFs();
-        //     const audioInput = document.getElementById('audio-file');
-        //     if (selectedFiles.length == 1 || audioInput.files.length == 1) {
-        //         await generateHeatmap();
-        //     } else {
-        //         alert('Please select only one PDF or audio file');
-        //     }
-        // });
-
-        // document.getElementById('analyze-trend').addEventListener('click', async () => {
-        //     const selectedFiles = getSelectedPDFs();
-        //     const audioInput = document.getElementById('audio-file');
-        //     if (selectedFiles.length > 0 || audioInput.files.length > 0) {
-        //         await generateTrendAnalysis();
-        //     } else {
-        //         alert('Please select at least one PDF or audio file');
-        //     }
-        // });
-
-        // Function to convert audio to text using Groq
-        async function convertAudioToText(audioFile) {
-            try {
-                // Create FormData and append the audio file
-                const formData = new FormData();
-                formData.append("file", audioFile);
-                formData.append("model", "whisper-1");
-
-                const response = await fetch("https://llmfoundry.straive.com/v1/audio/transcriptions", {
-                    method: "POST",
-                    headers: {
-                    },
-                    credentials: "include",
-                    body: formData
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
+            async function loadSampleQuestions() {
+                const response = await fetch('questions.json');
                 const data = await response.json();
-                return data.text
-            } catch (error) {
-                console.error('Error converting audio to text:', error);
-                throw error;
+                const select = document.getElementById('sample-questions');
+
+                Object.entries(data).forEach(([category, questions]) => {
+                    questions.forEach(question => {
+                        const option = document.createElement('option');
+                        option.value = question;
+                        option.textContent = question;
+                        select.appendChild(option);
+                    });
+                });
             }
-        }
 
-        async function generateSummary() {
-            const summaryContainer = document.getElementById('summary-container');
-            const summaryLoading = document.getElementById('summary-loading');
-            const summaryContent = document.getElementById('summary-content');
+            async function downloadQA() {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
 
-            summaryContainer.style.display = 'block';
-            summaryLoading.style.display = 'block';
-            summaryContent.innerHTML = '';
+                const qaContainer = document.getElementById('qa-container');
+                const qaItems = qaContainer.getElementsByClassName('question-answer');
 
-            try {
-                // Get only selected PDFs
-                const selectedFiles = getSelectedPDFs();
+                let yPosition = 20;
+                const lineHeight = 7;
+                const margin = 20;
+                const pageWidth = doc.internal.pageSize.getWidth();
+                const pageHeight = doc.internal.pageSize.getHeight();
 
+                Array.from(qaItems).forEach((item) => {
+                    const question = item.querySelector('.question').textContent;
+                    const answer = item.querySelector('.answer').textContent;
 
-                if (selectedFiles.length === 0) {
-                    const audioInput = document.getElementById('audio-file');
-                    if (audioInput.files.length === 0) {
-                        throw new Error('Please select at least one PDF or audio file');
+                    // Calculate heights for question and answer
+                    const questionLines = doc.splitTextToSize(question, pageWidth - 2 * margin);
+                    const answerLines = doc.splitTextToSize(answer, pageWidth - 2 * margin);
+                    const questionHeight = lineHeight * questionLines.length;
+                    const answerHeight = lineHeight * answerLines.length;
+                    const totalHeight = questionHeight + answerHeight + (2 * lineHeight); // Extra spacing
+
+                    // Check if content will fit on current page
+                    if (yPosition + totalHeight > pageHeight - margin) {
+                        doc.addPage();
+                        yPosition = 20; // Reset yPosition for new page
                     }
-                }
 
-                let userPrompt = ''
-                if (selectedFiles.length > 0) {
-                    const pdfTexts = await Promise.all(selectedFiles.map(file => extractTextFromPDF(file)));
-                    userPrompt = `Please analyze these earnings call transcripts and provide a structured summary for each document :
-        ${pdfTexts.map(text => `${text.filename}:\n${text.content}`).join('\n\n')}`;
+                    // Add question with styling
+                    doc.setFont('helvetica', 'bold');
+                    doc.text('Q:', margin, yPosition);
+                    doc.setFont('helvetica', 'normal');
+                    doc.setFontSize(14);
+                    doc.text(questionLines, margin + 10, yPosition);
+                    yPosition += questionHeight + lineHeight;
+
+                    // Add answer with styling
+                    doc.setFont('helvetica', 'bold');
+                    doc.text('A:', margin, yPosition);
+                    doc.setFont('helvetica', 'normal');
+                    doc.setFontSize(12);
+                    doc.text(answerLines, margin + 10, yPosition);
+                    yPosition += answerHeight + lineHeight;
+                });
+
+                doc.save('questions-and-answers.pdf');
+            }
+
+            document.getElementById('contract-file').addEventListener('change', (event) => {
+                uploadedFiles = Array.from(event.target.files);
+                displayPDFList();
+            });
+
+            document.getElementById('generate-summary').addEventListener('click', async () => {
+                const selectedFiles = getSelectedPDFs();
+                const audioInput = document.getElementById('audio-file');
+                if (selectedFiles.length > 0 || audioInput.files.length > 0) {
+                    await generateSummary();
+                    await generateHeatmap();
+                    await analyzeSentiment();
                 } else {
-                    const audioInput = document.getElementById('audio-file');
-                    const file = audioInput.files[0];
-                    const audioText = await convertAudioToText(file);
-                    userPrompt = `Please analyze these texts regarding earnings call transcripts and provide a structured summary for each document :
-        ${audioText}`;
+                    alert('Please select at least one PDF or audio file');
                 }
+            });
 
-                const systemPrompt = `You are an AI assistant specialized in analyzing earnings call transcripts. 
+            document.getElementById('ask-question').addEventListener('click', async () => {
+                const question = document.getElementById('user-question').value;
+                if (question.trim()) {
+                    const qaContainer = document.getElementById('qa-container');
+                    qaContainer.scrollTop = qaContainer.scrollHeight;
+                    const answer = await handleQuestionClick(question);
+                    //addQuestionAnswer(question, answer);
+                    document.getElementById('user-question').value = '';
+                }
+            });
+
+            document.getElementById('sample-questions').addEventListener('change', async (e) => {
+                if (e.target.value) {
+                    const qaContainer = document.getElementById('qa-container');
+                    qaContainer.scrollTop = qaContainer.scrollHeight;
+                    const answer = await handleQuestionClick(e.target.value);
+                    //addQuestionAnswer(e.target.value, answer);
+                    e.target.value = '';
+                }
+            });
+
+            // document.getElementById('analyze-sentiment').addEventListener('click', async () => {
+            //     const selectedFiles = getSelectedPDFs();
+            //     const audioInput = document.getElementById('audio-file');
+            //     if (selectedFiles.length == 1 || audioInput.files.length == 1) {
+            //         await analyzeSentiment();
+            //     } else {
+            //         alert('Please select only one PDF or audio file');
+            //     }
+            // });
+
+            document.getElementById('download-qa').addEventListener('click', downloadQA);
+
+            async function extractTextFromPDF(file) {
+                return new Promise(async (resolve) => {
+                    const arrayBuffer = await file.arrayBuffer();
+                    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                    let fullText = '';
+
+                    for (let i = 1; i <= pdf.numPages; i++) {
+                        const page = await pdf.getPage(i);
+                        const textContent = await page.getTextContent();
+                        const pageText = textContent.items.map(item => item.str).join(' ');
+                        fullText += pageText + ' ';
+                    }
+
+                    resolve({
+                        filename: file.name,
+                        content: fullText
+                    });
+                });
+            }
+
+            // document.getElementById('generate-heatmap').addEventListener('click', async () => {
+            //     const selectedFiles = getSelectedPDFs();
+            //     const audioInput = document.getElementById('audio-file');
+            //     if (selectedFiles.length == 1 || audioInput.files.length == 1) {
+            //         await generateHeatmap();
+            //     } else {
+            //         alert('Please select only one PDF or audio file');
+            //     }
+            // });
+
+            // document.getElementById('analyze-trend').addEventListener('click', async () => {
+            //     const selectedFiles = getSelectedPDFs();
+            //     const audioInput = document.getElementById('audio-file');
+            //     if (selectedFiles.length > 0 || audioInput.files.length > 0) {
+            //         await generateTrendAnalysis();
+            //     } else {
+            //         alert('Please select at least one PDF or audio file');
+            //     }
+            // });
+
+            // Function to convert audio to text using Groq
+            async function convertAudioToText(audioFile) {
+                try {
+                    // Create FormData and append the audio file
+                    const formData = new FormData();
+                    formData.append("file", audioFile);
+                    formData.append("model", "whisper-1");
+
+                    const response = await fetch("https://llmfoundry.straive.com/v1/audio/transcriptions", {
+                        method: "POST",
+                        headers: {
+                        },
+                        credentials: "include",
+                        body: formData
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    return data.text
+                } catch (error) {
+                    console.error('Error converting audio to text:', error);
+                    throw error;
+                }
+            }
+
+            async function generateSummary() {
+                const summaryContainer = document.getElementById('summary-container');
+                const summaryLoading = document.getElementById('summary-loading');
+                const summaryContent = document.getElementById('summary-content');
+
+                summaryContainer.style.display = 'block';
+                summaryLoading.style.display = 'block';
+                summaryContent.innerHTML = '';
+
+                try {
+                    // Get only selected PDFs
+                    const selectedFiles = getSelectedPDFs();
+
+
+                    if (selectedFiles.length === 0) {
+                        const audioInput = document.getElementById('audio-file');
+                        if (audioInput.files.length === 0) {
+                            throw new Error('Please select at least one PDF or audio file');
+                        }
+                    }
+
+                    let userPrompt = ''
+                    if (selectedFiles.length > 0) {
+                        const pdfTexts = await Promise.all(selectedFiles.map(file => extractTextFromPDF(file)));
+                        userPrompt = `Please analyze these earnings call transcripts and provide a structured summary for each document :
+        ${pdfTexts.map(text => `${text.filename}:\n${text.content}`).join('\n\n')}`;
+                    } else {
+                        const audioInput = document.getElementById('audio-file');
+                        const file = audioInput.files[0];
+                        const audioText = await convertAudioToText(file);
+                        userPrompt = `Please analyze these texts regarding earnings call transcripts and provide a structured summary for each document :
+        ${audioText}`;
+                    }
+
+                    const systemPrompt = `You are an AI assistant specialized in analyzing earnings call transcripts. 
     Please provide a comprehensive summary of all transcripts separetely.
     Mention the points in the bullet points.
     Format your response in markdown format with the following structure:
@@ -743,86 +796,86 @@
 -A summary of how the management addressed or responded to those concerns
 Do not display anything else other than summary.`;
 
-                const response = await fetch("https://llmfoundry.straive.com/azure/openai/deployments/gpt-4o/chat/completions?api-version=2025-01-01-preview", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    credentials: "include",
-                    body: JSON.stringify({
-                        messages: [
-                            { role: "system", content: systemPrompt },
-                            { role: "user", content: userPrompt }
-                        ]
-                    })
-                });
+                    const response = await fetch("https://llmfoundry.straive.com/azure/openai/deployments/gpt-4o/chat/completions?api-version=2025-01-01-preview", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        credentials: "include",
+                        body: JSON.stringify({
+                            messages: [
+                                { role: "system", content: systemPrompt },
+                                { role: "user", content: userPrompt }
+                            ]
+                        })
+                    });
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
 
-                const data = await response.json();
-                let summary = data.choices[0].message.content;
-                summary = marked.parse(summary)
+                    const data = await response.json();
+                    let summary = data.choices[0].message.content;
+                    summary = marked.parse(summary)
 
-                summaryContent.innerHTML = `
+                    summaryContent.innerHTML = `
             <div class="summary-text">
                 ${summary}
             </div>
         `;
 
-            } catch (error) {
-                console.error('Error generating summary:', error);
-                summaryContent.innerHTML = `
+                } catch (error) {
+                    console.error('Error generating summary:', error);
+                    summaryContent.innerHTML = `
             <div class="alert alert-danger">
                 Error generating summary: ${error.message}. Please try again.
             </div>
         `;
-            } finally {
-                summaryLoading.style.display = 'none';
+                } finally {
+                    summaryLoading.style.display = 'none';
+                }
             }
-        }
 
-        //Function to show original content
-        function showOriginalContent() {
-            const mainContent = document.querySelector('.container-fluid');
-            const questionsContainer = document.getElementById('questions-container');
-
-            // Show original content
-            mainContent.style.display = 'block';
-            // Clear and hide questions container
-            questionsContainer.innerHTML = '';
-            questionsContainer.style.display = 'none';
-            // Reset breadcrumb
-            updateBreadcrumb();
-        }
-
-        async function loadQuestions(category) {
-            try {
+            //Function to show original content
+            function showOriginalContent() {
                 const mainContent = document.querySelector('.container-fluid');
                 const questionsContainer = document.getElementById('questions-container');
-                //const footer = document.querySelector('footer');
 
-                // Hide all content except nav (nav is outside container-fluid)
-                mainContent.style.display = 'none';
-                // Show questions container
-                questionsContainer.style.display = 'block';
-                // Keep footer visible
-                //footer.style.display = 'flex';
+                // Show original content
+                mainContent.style.display = 'block';
+                // Clear and hide questions container
+                questionsContainer.innerHTML = '';
+                questionsContainer.style.display = 'none';
+                // Reset breadcrumb
+                updateBreadcrumb();
+            }
 
-                // Update breadcrumb
-                //updateBreadcrumb(category);
+            async function loadQuestions(category) {
+                try {
+                    const mainContent = document.querySelector('.container-fluid');
+                    const questionsContainer = document.getElementById('questions-container');
+                    //const footer = document.querySelector('footer');
 
-                const response = await fetch('questions.json');
-                const data = await response.json();
-                const questions = data[category];
+                    // Hide all content except nav (nav is outside container-fluid)
+                    mainContent.style.display = 'none';
+                    // Show questions container
+                    questionsContainer.style.display = 'block';
+                    // Keep footer visible
+                    //footer.style.display = 'flex';
 
-                questionsContainer.innerHTML = `
+                    // Update breadcrumb
+                    //updateBreadcrumb(category);
+
+                    const response = await fetch('questions.json');
+                    const data = await response.json();
+                    const questions = data[category];
+
+                    questionsContainer.innerHTML = `
       <div class="container">
         <h1 class="display-1 my-4 text-center">${category}</h1>
         <div class="questions-list">
     `;
 
-                questions.forEach((question, index) => {
-                    questionsContainer.innerHTML += `
+                    questions.forEach((question, index) => {
+                        questionsContainer.innerHTML += `
         <div class="question-box" id="question-${index}">
           <h4>${question}</h4>
           <div class="loading" id="loading-${index}" style="display: none;">
@@ -833,70 +886,70 @@ Do not display anything else other than summary.`;
           <div class="answer-box" id="answer-${index}"></div>
         </div>
       `;
-                });
-
-                questionsContainer.innerHTML += '</div></div>';
-
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
-
-                // Add click handlers to questions
-                questions.forEach((question, index) => {
-                    document.getElementById(`question-${index}`).addEventListener('click', () => {
-                        handleQuestionClick(question, index);
                     });
-                });
-            } catch (error) {
-                console.error('Error loading questions:', error);
-            }
-        }
 
-        //Add click handler to Dashboard link
-        document.addEventListener('DOMContentLoaded', () => {
-            loadSampleQuestions();
-        });
+                    questionsContainer.innerHTML += '</div></div>';
 
-        async function generateHeatmap() {
-            const analysisLoading = document.getElementById('analysis-loading');
-            const analysisContent = document.getElementById('analysis-content');
-            const describeContent = document.getElementById('describe-content');
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
 
-            analysisLoading.style.display = 'block';
-            analysisContent.innerHTML = '';
-            describeContent.innerHTML = '';
-
-            try {
-
-                // Get only selected PDFs
-                const selectedFiles = getSelectedPDFs();
-
-
-                if (selectedFiles.length === 0) {
-                    const audioInput = document.getElementById('audio-file');
-                    if (audioInput.files.length === 0) {
-                        throw new Error('Please select at least one PDF or audio file');
-                    }
+                    // Add click handlers to questions
+                    questions.forEach((question, index) => {
+                        document.getElementById(`question-${index}`).addEventListener('click', () => {
+                            handleQuestionClick(question, index);
+                        });
+                    });
+                } catch (error) {
+                    console.error('Error loading questions:', error);
                 }
+            }
 
-                let userPrompt = ''
-                if (selectedFiles.length > 0) {
-                    const pdfTexts = await Promise.all(selectedFiles.map(file => extractTextFromPDF(file)));
-                    userPrompt = `Based on the following earnings call transcripts:
+            //Add click handler to Dashboard link
+            document.addEventListener('DOMContentLoaded', () => {
+                loadSampleQuestions();
+            });
+
+            async function generateHeatmap() {
+                const analysisLoading = document.getElementById('analysis-loading');
+                const analysisContent = document.getElementById('analysis-content');
+                const describeContent = document.getElementById('describe-content');
+
+                analysisLoading.style.display = 'block';
+                analysisContent.innerHTML = '';
+                describeContent.innerHTML = '';
+
+                try {
+
+                    // Get only selected PDFs
+                    const selectedFiles = getSelectedPDFs();
+
+
+                    if (selectedFiles.length === 0) {
+                        const audioInput = document.getElementById('audio-file');
+                        if (audioInput.files.length === 0) {
+                            throw new Error('Please select at least one PDF or audio file');
+                        }
+                    }
+
+                    let userPrompt = ''
+                    if (selectedFiles.length > 0) {
+                        const pdfTexts = await Promise.all(selectedFiles.map(file => extractTextFromPDF(file)));
+                        userPrompt = `Based on the following earnings call transcripts:
 ${pdfTexts.map(text => `${text.filename}:\n${text.content}`).join('\n\n')}
 Give the values of x-axis along with the heatmap values for all values of x-axis and y-axis in the json format.`;
-                } else {
-                    const audioInput = document.getElementById('audio-file');
-                    const file = audioInput.files[0];
-                    const audioText = await convertAudioToText(file);
-                    console.log(audioText)
-                    userPrompt = `Please analyze these texts regarding earnings call transcript:
+                    } else {
+                        const audioInput = document.getElementById('audio-file');
+                        const file = audioInput.files[0];
+                        const audioText = await convertAudioToText(file);
+                        console.log(audioText)
+                        userPrompt = `Please analyze these texts regarding earnings call transcript:
         ${audioText}
         Give the values of x-axis along with the heatmap values for all values of x-axis and y-axis in the json format.`;
-                }
+                    }
 
-                const systemPrompt = `You are an AI assistant specialized in analyzing earnings call transcripts. 
+                    const systemPrompt = `You are an AI assistant specialized in analyzing earnings call transcripts. 
 I want to generate the heatmap that visualizes investor concerns and management confidence using sentiment scores ranging from -1 to 1. 
 The x-axis should represent key investor concerns.
 The y-axis should represent 'Investor Concern' and 'Management Confidence'.
@@ -912,96 +965,96 @@ overall_score: A value which is overall sentiment score.
 reason_score: One sentence which states out how overall sentiment score is calculated.
 Do not display any other text. Do not put any comment.`;
 
-                const response = await fetch("https://llmfoundry.straive.com/azure/openai/deployments/gpt-4o/chat/completions?api-version=2025-01-01-preview", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    credentials: "include",
-                    body: JSON.stringify({
-                        messages: [
-                            { role: "system", content: systemPrompt },
-                            { role: "user", content: userPrompt }
-                        ]
-                    })
-                });
+                    const response = await fetch("https://llmfoundry.straive.com/azure/openai/deployments/gpt-4o/chat/completions?api-version=2025-01-01-preview", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        credentials: "include",
+                        body: JSON.stringify({
+                            messages: [
+                                { role: "system", content: systemPrompt },
+                                { role: "user", content: userPrompt }
+                            ]
+                        })
+                    });
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
 
-                const data = await response.json();
-                let values = data.choices[0].message.content;
-                values = values.replace(/^```json\s*/, '').replace(/\s*```$/, '');
-                values = JSON.parse(values);
-                console.log(values);
+                    const data = await response.json();
+                    let values = data.choices[0].message.content;
+                    values = values.replace(/^```json\s*/, '').replace(/\s*```$/, '');
+                    values = JSON.parse(values);
+                    console.log(values);
 
-                const canvas = document.createElement('canvas');
-                canvas.id = 'heatmap';
-                analysisContent.appendChild(canvas);
+                    const canvas = document.createElement('canvas');
+                    canvas.id = 'heatmap';
+                    analysisContent.appendChild(canvas);
 
-                // Get the context of the canvas
-                const ctx = canvas.getContext('2d');
+                    // Get the context of the canvas
+                    const ctx = canvas.getContext('2d');
 
-                // Define the dimensions of the chart
-                const width = 800;
-                const height = 400;
+                    // Define the dimensions of the chart
+                    const width = 800;
+                    const height = 400;
 
-                // Set the canvas dimensions
-                canvas.width = width;
-                canvas.height = height;
+                    // Set the canvas dimensions
+                    canvas.width = width;
+                    canvas.height = height;
 
-                const investorConcernScores = values.ic_scores;
-                const managementConfidenceScores = values.mc_scores;
+                    const investorConcernScores = values.ic_scores;
+                    const managementConfidenceScores = values.mc_scores;
 
-                // Create the bar chart
-                const barChart = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: values.x,
-                        datasets: [
-                            {
-                                label: 'Investor Concerns',
-                                data: investorConcernScores,
-                                barPercentage: 0.4,
-                                categoryPercentage: 0.5,
+                    // Create the bar chart
+                    const barChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: values.x,
+                            datasets: [
+                                {
+                                    label: 'Investor Concerns',
+                                    data: investorConcernScores,
+                                    barPercentage: 0.4,
+                                    categoryPercentage: 0.5,
+                                },
+                                {
+                                    label: 'Management Confidence',
+                                    data: managementConfidenceScores,
+                                    barPercentage: 0.4,
+                                    categoryPercentage: 0.5,
+                                }
+                            ],
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: 'Investor Concerns',
+                                    },
+                                    stacked: false,
+                                },
+                                y: {
+                                    title: {
+                                        display: true,
+                                        text: 'Sentiment Score',
+                                    },
+                                    min: -1,
+                                    max: 1,
+                                    stacked: false,
+                                },
                             },
-                            {
-                                label: 'Management Confidence',
-                                data: managementConfidenceScores,
-                                barPercentage: 0.4,
-                                categoryPercentage: 0.5,
-                            }
-                        ],
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            x: {
+                            plugins: {
                                 title: {
                                     display: true,
-                                    text: 'Investor Concerns',
+                                    text: 'Investor Concerns and Management Confidence Bar Chart',
                                 },
-                                stacked: false,
-                            },
-                            y: {
-                                title: {
-                                    display: true,
-                                    text: 'Sentiment Score',
-                                },
-                                min: -1,
-                                max: 1,
-                                stacked: false,
                             },
                         },
-                        plugins: {
-                            title: {
-                                display: true,
-                                text: 'Investor Concerns and Management Confidence Bar Chart',
-                            },
-                        },
-                    },
-                });
-                describeContent.innerHTML += `<br><pre>
+                    });
+                    describeContent.innerHTML += `<br><pre>
                     Investor Concern:
                     Negative indicates topics where investors showed higher concern or skepticism.
                     Positive indicates lower investor concern.            
@@ -1011,559 +1064,558 @@ Do not display any other text. Do not put any comment.`;
                     <br>
                     <br>`;
 
-                // Constructing the description content
-                let descriptionHTML = '';
+                    // Constructing the description content
+                    let descriptionHTML = '';
 
-                // Loop through investor concerns and reasons
-                for (let i = 0; i < values.x.length; i++) {
-                    descriptionHTML += `<strong>${i + 1}. ${values.x[i]}</strong> - ${values.reasons[i]}<br>`;
-                }
+                    // Loop through investor concerns and reasons
+                    for (let i = 0; i < values.x.length; i++) {
+                        descriptionHTML += `<strong>${i + 1}. ${values.x[i]}</strong> - ${values.reasons[i]}<br>`;
+                    }
 
-                // Overall Sentiment Score
-                const overallScore = values.overall_score;
-                const overallScoreColor = overallScore > 0 ? 'green' : 'red';
-                // descriptionHTML += `<div style="text-align: center;"><br><br><strong style="font-weight: normal; font-size: 24">Overall Sentiment Score : </strong><strong style="color: ${overallScoreColor}; font-weight: bold; font-size: 24">${overallScore}<br><br></div>`;
+                    // Overall Sentiment Score
+                    const overallScore = values.overall_score;
+                    const overallScoreColor = overallScore > 0 ? 'green' : 'red';
+                    // descriptionHTML += `<div style="text-align: center;"><br><br><strong style="font-weight: normal; font-size: 24">Overall Sentiment Score : </strong><strong style="color: ${overallScoreColor}; font-weight: bold; font-size: 24">${overallScore}<br><br></div>`;
 
-                // // Reason for Overall Sentiment Score
-                // descriptionHTML += `<p><span style="font-weight: bold;">Reason for Overall Sentiment Score:</span> ${values.reason_score}</p><br>`;
+                    // // Reason for Overall Sentiment Score
+                    // descriptionHTML += `<p><span style="font-weight: bold;">Reason for Overall Sentiment Score:</span> ${values.reason_score}</p><br>`;
 
-                descriptionHTML += `<br>
+                    descriptionHTML += `<br>
   <div style="text-align: center; font-size: 36px;">
     <strong style="font-weight: normal; font-size: 24px;">Overall Sentiment Score : </strong>
     <strong style="color: ${overallScoreColor}; font-weight: bold; font-size: 24px;">${overallScore}</strong>
   </div>
 <br>`;
 
-                // Reason for Overall Sentiment Score
-                descriptionHTML += `
+                    // Reason for Overall Sentiment Score
+                    descriptionHTML += `
   <p style="color: black;">
     <span style="font-weight: bold;">How Overall Sentiment Score is calculated : </span> ${values.reason_score}
   </p><br>
 `;
 
-                describeContent.innerHTML += descriptionHTML;
-            } catch (error) {
-                console.error('Error generating heatmap:', error);
-                analysisContent.innerHTML = `
+                    describeContent.innerHTML += descriptionHTML;
+                } catch (error) {
+                    console.error('Error generating heatmap:', error);
+                    analysisContent.innerHTML = `
   <div class="alert alert-danger">
     Error generating heatmap: ${error.message}. Please try again.
   </div>
 `;
-            } finally {
-                analysisLoading.style.display = 'none';
+                } finally {
+                    analysisLoading.style.display = 'none';
+                }
             }
-        }
 
-        async function analyzeSentiment() {
-            const sentimentLoading = document.getElementById('sentiment-loading');
-            const sentimentContent = document.getElementById('sentiment-content');
+            async function analyzeSentiment() {
+                const sentimentLoading = document.getElementById('sentiment-loading');
+                const sentimentContent = document.getElementById('sentiment-content');
 
-            sentimentLoading.style.display = 'block';
-            sentimentContent.innerHTML = '';
+                sentimentLoading.style.display = 'block';
+                sentimentContent.innerHTML = '';
 
-            try {
-                // Get only selected PDFs
-                const selectedFiles = getSelectedPDFs();
+                try {
+                    // Get only selected PDFs
+                    const selectedFiles = getSelectedPDFs();
 
 
-                if (selectedFiles.length === 0) {
-                    const audioInput = document.getElementById('audio-file');
-                    if (audioInput.files.length === 0) {
-                        throw new Error('Please select at least one PDF or audio file');
+                    if (selectedFiles.length === 0) {
+                        const audioInput = document.getElementById('audio-file');
+                        if (audioInput.files.length === 0) {
+                            throw new Error('Please select at least one PDF or audio file');
+                        }
                     }
-                }
 
-                let userPrompt = ''
-                if (selectedFiles.length > 0) {
-                    const pdfTexts = await Promise.all(selectedFiles.map(file => extractTextFromPDF(file)));
-                    userPrompt = `Based on the following earnings call transcripts:
+                    let userPrompt = ''
+                    if (selectedFiles.length > 0) {
+                        const pdfTexts = await Promise.all(selectedFiles.map(file => extractTextFromPDF(file)));
+                        userPrompt = `Based on the following earnings call transcripts:
         ${pdfTexts.map(text => `${text.filename}:\n${text.content}`).join('\n\n')}`;
-                } else {
-                    const audioInput = document.getElementById('audio-file');
-                    const file = audioInput.files[0];
-                    const audioText = await convertAudioToText(file);
-                    console.log(audioText)
-                    userPrompt = `Please analyze these texts regarding earnings call transcript:
+                    } else {
+                        const audioInput = document.getElementById('audio-file');
+                        const file = audioInput.files[0];
+                        const audioText = await convertAudioToText(file);
+                        console.log(audioText)
+                        userPrompt = `Please analyze these texts regarding earnings call transcript:
 ${audioText}`;
-                }
+                    }
 
-                const systemPrompt = `You are an AI assistant specialized in sentiment analysis. 
+                    const systemPrompt = `You are an AI assistant specialized in sentiment analysis. 
         Analyze the following earnings call transcripts and separate the statements into positive and negative sentiments.
         Make sure that the statements must not be any casual line or any instruction or anything else.
         These statements should have some facts and figures or higlight some crucial points.
-        Also provide the page number inside () from where it is taken.
+        Also provide the page number inside () from where it is taken. Example (Page - 2).
         Return the 5 best statements for each category.
         Format your response in JSON with two keys: "positive" and "negative". 
         Each key should contain an array of statements.`;
 
-                const response = await fetch("https://llmfoundry.straive.com/azure/openai/deployments/gpt-4o/chat/completions?api-version=2025-01-01-preview", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    credentials: "include",
-                    body: JSON.stringify({
-                        messages: [
-                            { role: "system", content: systemPrompt },
-                            { role: "user", content: userPrompt }
-                        ]
-                    })
-                });
+                    const response = await fetch("https://llmfoundry.straive.com/azure/openai/deployments/gpt-4o/chat/completions?api-version=2025-01-01-preview", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        credentials: "include",
+                        body: JSON.stringify({
+                            messages: [
+                                { role: "system", content: systemPrompt },
+                                { role: "user", content: userPrompt }
+                            ]
+                        })
+                    });
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
 
-                const rawData = await response.json();
-                let sentiments;
-                sentiments = rawData.choices[0].message.content;
-                sentiments = sentiments.replace(/^```json\s*/, '').replace(/\s*```$/, '');
-                sentiments = JSON.parse(sentiments);
+                    const rawData = await response.json();
+                    let sentiments;
+                    sentiments = rawData.choices[0].message.content;
+                    sentiments = sentiments.replace(/^```json\s*/, '').replace(/\s*```$/, '');
+                    sentiments = JSON.parse(sentiments);
 
-                // Create the HTML bullet points
-                let sentimentList = `
+                    // Create the HTML bullet points
+                    let sentimentList = `
             <div>
                 <h3>Positive Sentiments:</h3>
                 <ul style="color: green;">
         `;
 
-                sentiments.positive.forEach(statement => {
-                    sentimentList += `<li>${statement}</li>`;
-                });
+                    sentiments.positive.forEach(statement => {
+                        sentimentList += `<li>${statement}</li>`;
+                    });
 
-                sentimentList += `
+                    sentimentList += `
                 </ul>
                 <h3>Negative Sentiments:</h3>
                 <ul style="color: red;">
         `;
 
-                sentiments.negative.forEach(statement => {
-                    sentimentList += `<li>${statement}</li>`;
-                });
+                    sentiments.negative.forEach(statement => {
+                        sentimentList += `<li>${statement}</li>`;
+                    });
 
-                sentimentList += `
+                    sentimentList += `
                 </ul>
             </div>
         `;
 
-                sentimentContent.innerHTML = sentimentList;
+                    sentimentContent.innerHTML = sentimentList;
 
-            } catch (error) {
-                console.error('Error analyzing sentiment:', error);
-                sentimentContent.innerHTML = `
+                } catch (error) {
+                    console.error('Error analyzing sentiment:', error);
+                    sentimentContent.innerHTML = `
             <div class="alert alert-danger">
                 Error analyzing sentiment: ${error.message}. Please try again.
             </div>
         `;
-            } finally {
-                sentimentLoading.style.display = 'none';
-            }
-        }
-
-        //         // Create the HTML table
-        //         let sentimentTable = `
-        // <table>
-        //     <thead>
-        //         <tr>
-        //             <th>Positive Sentiments</th>
-        //             <th>Neutral Sentiments</th>
-        //             <th>Negative Sentiments</th>
-        //         </tr>
-        //     </thead>
-        //     <tbody>
-        // `;
-
-        //         const maxLength = Math.max(sentiments.positive.length, sentiments.neutral.length, sentiments.negative.length);
-
-        //         for (let i = 0; i < maxLength; i++) {
-        //             sentimentTable += '<tr>';
-        //             sentimentTable += `<td>${sentiments.positive[i] ? `<li>${sentiments.positive[i]}</li>` : ''}</td>`;
-        //             sentimentTable += `<td>${sentiments.neutral[i] ? `<li>${sentiments.neutral[i]}</li>` : ''}</td>`;
-        //             sentimentTable += `<td>${sentiments.negative[i] ? `<li>${sentiments.negative[i]}</li>` : ''}</td>`;
-        //             sentimentTable += '</tr>';
-        //         }
-
-        //         sentimentTable += `
-        //     </tbody>
-        // </table>
-        // `;
-
-        //         sentimentContent.innerHTML = `
-        // <div class="sentiment-table">
-        //     ${sentimentTable}
-        // </div>
-        // `;
-
-        //     } catch (error) {
-        //         console.error('Error analyzing sentiment:', error);
-        //         sentimentContent.innerHTML = `
-        // <div class="alert alert-danger">
-        //     Error analyzing sentiment: ${error.message}. Please try again.
-        // </div>
-        // `;
-        //     } finally {
-        //         sentimentLoading.style.display = 'none';
-        //     }
-        // }
-
-        //         async function generateTrendAnalysis() {
-        //             const trendLoading = document.getElementById('trend-loading');
-        //             const trendContent = document.getElementById('trend-content');
-        //             const trendTables = document.getElementById('trend-table');
-
-        //             trendLoading.style.display = 'block';
-        //             trendContent.innerHTML = '';
-        //             trendTables.innerHTML = '';
-
-        //             try {
-        //                 // Get only selected PDFs
-        //                 const selectedFiles = getSelectedPDFs();
-
-
-        //                 if (selectedFiles.length === 0) {
-        //                     const audioInput = document.getElementById('audio-file');
-        //                     if (audioInput.files.length === 0) {
-        //                         throw new Error('Please select at least one PDF or audio file');
-        //                     }
-        //                 }
-
-        //                 let userPrompt = ''
-        //                 if (selectedFiles.length > 0) {
-        //                     const pdfTexts = await Promise.all(selectedFiles.map(file => extractTextFromPDF(file)));
-        //                     userPrompt = `Based on the following earnings call transcripts:
-        // ${pdfTexts.map(text => `${text.filename}:\n${text.content}`).join('\n\n')}
-        // Give the company name.`;
-        //                 } else {
-        //                     const audioInput = document.getElementById('audio-file');
-        //                     const file = audioInput.files[0];
-        //                     const audioText = await convertAudioToText(file);
-        //                     console.log(audioText)
-        //                     userPrompt = `Please analyze these texts regarding earnings call transcript:
-        // ${audioText}
-        // Give the company name.`;
-        //                 }
-
-        //                 const systemPrompt = `You are an AI assistant specialized in identifying documents. 
-        // Analyze the following earnings call transcripts and determine the company that the transcripts are from (either Enbridge, Pembina, or TC Energy).
-        // Just give the company name. Do not give anything else.`;
-
-        //                 const response = await fetch("https://llmfoundry.straive.com/openai/v1/chat/completions", {
-        //                     method: "POST",
-        //                     headers: {
-        //                         "Content-Type": "application/json",
-        //                     },
-        //                     credentials: "include",
-        //                     body: JSON.stringify({
-        //                         model: "gpt-4o-mini",
-        //                         messages: [
-        //                             {
-        //                                 role: "system",
-        //                                 content: systemPrompt
-        //                             },
-        //                             {
-        //                                 role: "user",
-        //                                 content: userPrompt
-        //                             }
-        //                         ],
-        //                     }),
-        //                 });
-
-        //                 if (!response.ok) {
-        //                     throw new Error(`HTTP error! status: ${response.status}`);
-        //                 }
-
-        //                 const company_name = await response.json();
-        //                 const name = company_name.choices[0].message.content
-
-        //                 let data, labels, title;
-        //                 switch (name) {
-        //                     case 'TC Energy':
-        //                         data = [0.35, 0.05, 0.30, 0.75, 0.25];
-        //                         labels = ['Q4 2023', 'Q1 2024', 'Q2 2024', 'Q3 2024', 'Q4 2024'];
-        //                         summary = ['Highlighted record financial performance with an 11% increase in EBITDA, successful project completions, and a 24th consecutive year of dividend increases. The overall tone is highly optimistic, emphasizing operational success and strategic achievements.', 'Showcased growth with an 11% year-over-year increase in comparable EBITDA and successful project execution. However, challenges such as high-interest expenses were acknowledged, moderating the positive tone.', 'Demonstrated strong financial performance with a 9% growth in EBITDA. Key achievements included shareholder approval for strategic', ' Reported a 6% year-over-year increase in EBITDA, reflecting consistent growth and successful project completions. Operational excellence was emphasized, but moderated capital expenditure estimates introduced a slight cautionary tone. The overall sentiment remained highly optimistic.', 'Marked a pivotal year with the completion of the Liquids Pipelines spin-off and robust project execution. EBITDA grew by 6% for the quarter. While the outlook for 2025 was strong, the sentiment included cautious optimism due to external economic factors, slightly tempering the positive tone.']
-        //                         title = 'Investor Sentiment Trend Over last 5 TC Energy Earnings calls';
-        //                         break;
-        //                     case 'Enbridge':
-        //                         data = [0.9, 0.8, 0.8, 0.85, 0.9];
-        //                         labels = ['Q4 2023', 'Q1 2024', 'Q2 2024', 'Q3 2024', 'Q4 2024'];
-        //                         summary = ['The report emphasized record financial performance, strategic acquisitions, and consistent dividend growth, highlighting confidence in the company’s future growth.', 'Strong operational performance and financial results were key themes, with the company showcasing significant milestones, such as acquisitions and sustainability efforts.', 'Progress on strategic initiatives, high utilization across business units, and new project sanctions demonstrated continued momentum and financial stability.', ' Optimism about future growth was reflected in high utilization rates and the completion of major acquisitions, further diversifying the portfolio.', 'The company concluded the year with record results and significant achievements, reinforcing its low-risk business model and consistent growth in dividends.']
-        //                         title = 'Investor Sentiment Trend Over last 5 Enbridge Earnings calls';
-        //                         break;
-        //                     case 'Pembina':
-        //                         data = [0.7, 0.75, 0.7, 0.65, 0.8];
-        //                         labels = ['Q4 2023', 'Q1 2024', 'Q2 2024', 'Q3 2024', 'Q4 2024'];
-        //                         summary = ['The discussion is characterized by strong performance, highlighted by record annual EBITDA and notable operational achievements.', ' The management emphasizes record adjusted EBITDA, successful acquisitions, and improved guidance. ', 'The transcript reflects a very positive outlook with record cash flow, robust financial performance, and strategic acquisitions', 'The call carries a positive yet measured tone. There is clear confidence stemming from increased ownership of key assets and operational improvements; however, some passages note specific headwinds (such as transient outages and adjustments for prior period events). ', 'The management highlights record quarterly and annual results, strategic asset enhancements, and multiple project milestones. The narrative is highly confident with a clear strategic vision for continued growth and capital efficiency, suggesting strong confidence in future prospects.']
-        //                         title = 'Investor Sentiment Trend Over last 5 Pembina Earnings calls';
-        //                         break;
-        //                     default:
-        //                         throw new Error('Invalid company');
-        //                 }
-
-        //                 // Create the chart
-        //                 const canvas = document.createElement('canvas');
-        //                 canvas.id = 'trend-chart';
-        //                 canvas.width = 800;
-        //                 canvas.height = 400;
-        //                 trendContent.appendChild(canvas);
-
-        //                 new Chart(canvas, {
-        //                     type: 'line',
-        //                     data: {
-        //                         labels: labels,
-        //                         datasets: [
-        //                             {
-        //                                 label: 'Sentiment Score (Polarity)',
-        //                                 data: data,
-        //                                 borderColor: 'rgb(75, 192, 192)',
-        //                                 tension: 0.1
-        //                             }
-        //                         ]
-        //                     },
-        //                     options: {
-        //                         responsive: true,
-        //                         maintainAspectRatio: false,
-        //                         scales: {
-        //                             x: {
-        //                                 title: {
-        //                                     display: true,
-        //                                     text: 'Earnings Call Quarter'
-        //                                 }
-        //                             },
-        //                             y: {
-        //                                 title: {
-        //                                     display: true,
-        //                                     text: 'Sentiment Score (Polarity)'
-        //                                 },
-        //                                 min: 0,
-        //                                 max: 1
-        //                             }
-        //                         },
-        //                         plugins: {
-        //                             title: {
-        //                                 display: true,
-        //                                 text: title
-        //                             }
-        //                         }
-        //                     }
-        //                 });
-
-        //                 // Create the trend table
-        //                 let trendTable = `
-        // <table class="trend-table">
-        //     <thead>
-        //         <tr>
-        //             <th>Earnings Call</th>
-        //             <th>Sentiment Score</th>
-        //             <th>Summary</th>
-        //         </tr>
-        //     </thead>
-        //     <tbody>
-        // `;
-
-        //                 for (let i = 0; i < labels.length; i++) {
-        //                     trendTable += `
-        //         <tr>
-        //             <td>${labels[i]}</td>
-        //             <td>${data[i]}</td>
-        //             <td>${summary[i]}</td>
-        //         </tr>
-        //         `;
-        //                 }
-
-        //                 trendTable += `
-        //     </tbody>
-        // </table>
-        // `;
-
-        //                 trendTables.innerHTML = trendTable;
-        //             } catch (error) {
-        //                 console.error('Error generating trend analysis:', error);
-        //                 trendContent.innerHTML = `
-        // <div class="alert alert-danger">
-        //     Error generating trend analysis: ${error.message}. Please try again.
-        // </div>
-        // `;
-        //             } finally {
-        //                 trendLoading.style.display = 'none';
-        //             }
-        //         }
-
-
-
-
-
-
-
-        //         async function handleQuestionClick(question) {
-        //             const qaLoading = document.getElementById('qa-loading');
-        //             qaLoading.style.display = 'block';
-        //             try {
-        //                 // Get only selected PDFs
-        //                 const selectedFiles = getSelectedPDFs();
-
-
-        //                 if (selectedFiles.length === 0) {
-        //                     const audioInput = document.getElementById('audio-file');
-        //                     if (audioInput.files.length === 0) {
-        //                         throw new Error('Please select at least one PDF or audio file');
-        //                     }
-        //                 }
-
-        //                 let userPrompt = ''
-        //                 if (selectedFiles.length > 0) {
-        //                     const pdfTexts = await Promise.all(selectedFiles.map(file => extractTextFromPDF(file)));
-        //                     userPrompt = `Based on the following earnings call transcripts:
-        //         ${pdfTexts.map(text => `${text.filename}:\n${text.content}`).join('\n\n')}
-
-        //         Please answer this question: ${question}`;
-        //                 } else {
-        //                     const audioInput = document.getElementById('audio-file');
-        //                     const file = audioInput.files[0];
-        //                     const audioText = await convertAudioToText(file);
-        //                     console.log(audioText)
-        //                     userPrompt = `Based on these texts regarding earnings call transcript:
-        // ${audioText}
-        // Please answer this question: ${question}`;
-        //                 }
-
-        //                 const systemPrompt = `You are an AI assistant specialized in analyzing earnings call transcripts. 
-        //         Analyze the provided transcripts and answer questions about financial performance, business strategy, and market trends.
-        //         Base your answers only on the information provided in the transcripts.`;
-
-        //                 const answer = await fetch("https://llmfoundry.straive.com/azure/openai/deployments/gpt-4o/chat/completions?api-version=2025-01-01-preview", {
-        //                     method: "POST",
-        //                     headers: { "Content-Type": "application/json" },
-        //                     credentials: "include",
-        //                     body: JSON.stringify({
-        //                         messages: [
-        //                             { role: "system", content: systemPrompt },
-        //                             { role: "user", content: userPrompt }
-        //                         ]
-        //                     })
-        //                 });
-
-        //                 if (!answer.ok) {
-        //                     throw new Error(`HTTP error! status: ${answer.status}`);
-        //                 }
-
-        //                 const data = await answer.json();
-        //                 let ans = data.choices[0].message.content
-        //                 return ans;
-
-        //             } catch (error) {
-        //                 console.error('Error getting answer:', error);
-        //                 return `Error: ${error.message}. Please try again.`;
-        //             } finally {
-        //                 qaLoading.style.display = 'none';
-        //             }
-        //         }
-        //         function addQuestionAnswer(question, answer) {
-        //             const qaContainer = document.getElementById('qa-container');
-        //             const qaDiv = document.createElement('div');
-        //             qaDiv.className = 'question-answer mb-4 p-3 border rounded';
-
-        //             // Convert markdown to HTML using marked
-        //             const formattedAnswer = marked.parse(answer);
-        //             qaDiv.innerHTML = `
-        //         <div class="question fw-bold mb-2">Q: ${question}</div>
-        //         <div class="answer">A: ${formattedAnswer}</div>
-        //     `;
-        //             qaContainer.appendChild(qaDiv);
-        //         }
-        async function handleQuestionClick(question) {
-            const qaLoading = document.getElementById('qa-loading');
-            qaLoading.style.display = 'block';
-
-            try {
-                // Get only selected PDFs
-                const selectedFiles = getSelectedPDFs();
-
-                if (selectedFiles.length === 0) {
-                    const audioInput = document.getElementById('audio-file');
-                    if (audioInput.files.length === 0) {
-                        throw new Error('Please select at least one PDF or audio file');
-                    }
+                } finally {
+                    sentimentLoading.style.display = 'none';
                 }
+            }
 
-                let userPrompt = '';
-                if (selectedFiles.length > 0) {
-                    const pdfTexts = await Promise.all(selectedFiles.map(file => extractTextFromPDF(file)));
-                    userPrompt = `Based on the following earnings call transcripts:
+            //         // Create the HTML table
+            //         let sentimentTable = `
+            // <table>
+            //     <thead>
+            //         <tr>
+            //             <th>Positive Sentiments</th>
+            //             <th>Neutral Sentiments</th>
+            //             <th>Negative Sentiments</th>
+            //         </tr>
+            //     </thead>
+            //     <tbody>
+            // `;
+
+            //         const maxLength = Math.max(sentiments.positive.length, sentiments.neutral.length, sentiments.negative.length);
+
+            //         for (let i = 0; i < maxLength; i++) {
+            //             sentimentTable += '<tr>';
+            //             sentimentTable += `<td>${sentiments.positive[i] ? `<li>${sentiments.positive[i]}</li>` : ''}</td>`;
+            //             sentimentTable += `<td>${sentiments.neutral[i] ? `<li>${sentiments.neutral[i]}</li>` : ''}</td>`;
+            //             sentimentTable += `<td>${sentiments.negative[i] ? `<li>${sentiments.negative[i]}</li>` : ''}</td>`;
+            //             sentimentTable += '</tr>';
+            //         }
+
+            //         sentimentTable += `
+            //     </tbody>
+            // </table>
+            // `;
+
+            //         sentimentContent.innerHTML = `
+            // <div class="sentiment-table">
+            //     ${sentimentTable}
+            // </div>
+            // `;
+
+            //     } catch (error) {
+            //         console.error('Error analyzing sentiment:', error);
+            //         sentimentContent.innerHTML = `
+            // <div class="alert alert-danger">
+            //     Error analyzing sentiment: ${error.message}. Please try again.
+            // </div>
+            // `;
+            //     } finally {
+            //         sentimentLoading.style.display = 'none';
+            //     }
+            // }
+
+            //         async function generateTrendAnalysis() {
+            //             const trendLoading = document.getElementById('trend-loading');
+            //             const trendContent = document.getElementById('trend-content');
+            //             const trendTables = document.getElementById('trend-table');
+
+            //             trendLoading.style.display = 'block';
+            //             trendContent.innerHTML = '';
+            //             trendTables.innerHTML = '';
+
+            //             try {
+            //                 // Get only selected PDFs
+            //                 const selectedFiles = getSelectedPDFs();
+
+
+            //                 if (selectedFiles.length === 0) {
+            //                     const audioInput = document.getElementById('audio-file');
+            //                     if (audioInput.files.length === 0) {
+            //                         throw new Error('Please select at least one PDF or audio file');
+            //                     }
+            //                 }
+
+            //                 let userPrompt = ''
+            //                 if (selectedFiles.length > 0) {
+            //                     const pdfTexts = await Promise.all(selectedFiles.map(file => extractTextFromPDF(file)));
+            //                     userPrompt = `Based on the following earnings call transcripts:
+            // ${pdfTexts.map(text => `${text.filename}:\n${text.content}`).join('\n\n')}
+            // Give the company name.`;
+            //                 } else {
+            //                     const audioInput = document.getElementById('audio-file');
+            //                     const file = audioInput.files[0];
+            //                     const audioText = await convertAudioToText(file);
+            //                     console.log(audioText)
+            //                     userPrompt = `Please analyze these texts regarding earnings call transcript:
+            // ${audioText}
+            // Give the company name.`;
+            //                 }
+
+            //                 const systemPrompt = `You are an AI assistant specialized in identifying documents. 
+            // Analyze the following earnings call transcripts and determine the company that the transcripts are from (either Enbridge, Pembina, or TC Energy).
+            // Just give the company name. Do not give anything else.`;
+
+            //                 const response = await fetch("https://llmfoundry.straive.com/openai/v1/chat/completions", {
+            //                     method: "POST",
+            //                     headers: {
+            //                         "Content-Type": "application/json",
+            //                     },
+            //                     credentials: "include",
+            //                     body: JSON.stringify({
+            //                         model: "gpt-4o-mini",
+            //                         messages: [
+            //                             {
+            //                                 role: "system",
+            //                                 content: systemPrompt
+            //                             },
+            //                             {
+            //                                 role: "user",
+            //                                 content: userPrompt
+            //                             }
+            //                         ],
+            //                     }),
+            //                 });
+
+            //                 if (!response.ok) {
+            //                     throw new Error(`HTTP error! status: ${response.status}`);
+            //                 }
+
+            //                 const company_name = await response.json();
+            //                 const name = company_name.choices[0].message.content
+
+            //                 let data, labels, title;
+            //                 switch (name) {
+            //                     case 'TC Energy':
+            //                         data = [0.35, 0.05, 0.30, 0.75, 0.25];
+            //                         labels = ['Q4 2023', 'Q1 2024', 'Q2 2024', 'Q3 2024', 'Q4 2024'];
+            //                         summary = ['Highlighted record financial performance with an 11% increase in EBITDA, successful project completions, and a 24th consecutive year of dividend increases. The overall tone is highly optimistic, emphasizing operational success and strategic achievements.', 'Showcased growth with an 11% year-over-year increase in comparable EBITDA and successful project execution. However, challenges such as high-interest expenses were acknowledged, moderating the positive tone.', 'Demonstrated strong financial performance with a 9% growth in EBITDA. Key achievements included shareholder approval for strategic', ' Reported a 6% year-over-year increase in EBITDA, reflecting consistent growth and successful project completions. Operational excellence was emphasized, but moderated capital expenditure estimates introduced a slight cautionary tone. The overall sentiment remained highly optimistic.', 'Marked a pivotal year with the completion of the Liquids Pipelines spin-off and robust project execution. EBITDA grew by 6% for the quarter. While the outlook for 2025 was strong, the sentiment included cautious optimism due to external economic factors, slightly tempering the positive tone.']
+            //                         title = 'Investor Sentiment Trend Over last 5 TC Energy Earnings calls';
+            //                         break;
+            //                     case 'Enbridge':
+            //                         data = [0.9, 0.8, 0.8, 0.85, 0.9];
+            //                         labels = ['Q4 2023', 'Q1 2024', 'Q2 2024', 'Q3 2024', 'Q4 2024'];
+            //                         summary = ['The report emphasized record financial performance, strategic acquisitions, and consistent dividend growth, highlighting confidence in the company’s future growth.', 'Strong operational performance and financial results were key themes, with the company showcasing significant milestones, such as acquisitions and sustainability efforts.', 'Progress on strategic initiatives, high utilization across business units, and new project sanctions demonstrated continued momentum and financial stability.', ' Optimism about future growth was reflected in high utilization rates and the completion of major acquisitions, further diversifying the portfolio.', 'The company concluded the year with record results and significant achievements, reinforcing its low-risk business model and consistent growth in dividends.']
+            //                         title = 'Investor Sentiment Trend Over last 5 Enbridge Earnings calls';
+            //                         break;
+            //                     case 'Pembina':
+            //                         data = [0.7, 0.75, 0.7, 0.65, 0.8];
+            //                         labels = ['Q4 2023', 'Q1 2024', 'Q2 2024', 'Q3 2024', 'Q4 2024'];
+            //                         summary = ['The discussion is characterized by strong performance, highlighted by record annual EBITDA and notable operational achievements.', ' The management emphasizes record adjusted EBITDA, successful acquisitions, and improved guidance. ', 'The transcript reflects a very positive outlook with record cash flow, robust financial performance, and strategic acquisitions', 'The call carries a positive yet measured tone. There is clear confidence stemming from increased ownership of key assets and operational improvements; however, some passages note specific headwinds (such as transient outages and adjustments for prior period events). ', 'The management highlights record quarterly and annual results, strategic asset enhancements, and multiple project milestones. The narrative is highly confident with a clear strategic vision for continued growth and capital efficiency, suggesting strong confidence in future prospects.']
+            //                         title = 'Investor Sentiment Trend Over last 5 Pembina Earnings calls';
+            //                         break;
+            //                     default:
+            //                         throw new Error('Invalid company');
+            //                 }
+
+            //                 // Create the chart
+            //                 const canvas = document.createElement('canvas');
+            //                 canvas.id = 'trend-chart';
+            //                 canvas.width = 800;
+            //                 canvas.height = 400;
+            //                 trendContent.appendChild(canvas);
+
+            //                 new Chart(canvas, {
+            //                     type: 'line',
+            //                     data: {
+            //                         labels: labels,
+            //                         datasets: [
+            //                             {
+            //                                 label: 'Sentiment Score (Polarity)',
+            //                                 data: data,
+            //                                 borderColor: 'rgb(75, 192, 192)',
+            //                                 tension: 0.1
+            //                             }
+            //                         ]
+            //                     },
+            //                     options: {
+            //                         responsive: true,
+            //                         maintainAspectRatio: false,
+            //                         scales: {
+            //                             x: {
+            //                                 title: {
+            //                                     display: true,
+            //                                     text: 'Earnings Call Quarter'
+            //                                 }
+            //                             },
+            //                             y: {
+            //                                 title: {
+            //                                     display: true,
+            //                                     text: 'Sentiment Score (Polarity)'
+            //                                 },
+            //                                 min: 0,
+            //                                 max: 1
+            //                             }
+            //                         },
+            //                         plugins: {
+            //                             title: {
+            //                                 display: true,
+            //                                 text: title
+            //                             }
+            //                         }
+            //                     }
+            //                 });
+
+            //                 // Create the trend table
+            //                 let trendTable = `
+            // <table class="trend-table">
+            //     <thead>
+            //         <tr>
+            //             <th>Earnings Call</th>
+            //             <th>Sentiment Score</th>
+            //             <th>Summary</th>
+            //         </tr>
+            //     </thead>
+            //     <tbody>
+            // `;
+
+            //                 for (let i = 0; i < labels.length; i++) {
+            //                     trendTable += `
+            //         <tr>
+            //             <td>${labels[i]}</td>
+            //             <td>${data[i]}</td>
+            //             <td>${summary[i]}</td>
+            //         </tr>
+            //         `;
+            //                 }
+
+            //                 trendTable += `
+            //     </tbody>
+            // </table>
+            // `;
+
+            //                 trendTables.innerHTML = trendTable;
+            //             } catch (error) {
+            //                 console.error('Error generating trend analysis:', error);
+            //                 trendContent.innerHTML = `
+            // <div class="alert alert-danger">
+            //     Error generating trend analysis: ${error.message}. Please try again.
+            // </div>
+            // `;
+            //             } finally {
+            //                 trendLoading.style.display = 'none';
+            //             }
+            //         }
+
+
+
+
+
+
+
+            //         async function handleQuestionClick(question) {
+            //             const qaLoading = document.getElementById('qa-loading');
+            //             qaLoading.style.display = 'block';
+            //             try {
+            //                 // Get only selected PDFs
+            //                 const selectedFiles = getSelectedPDFs();
+
+
+            //                 if (selectedFiles.length === 0) {
+            //                     const audioInput = document.getElementById('audio-file');
+            //                     if (audioInput.files.length === 0) {
+            //                         throw new Error('Please select at least one PDF or audio file');
+            //                     }
+            //                 }
+
+            //                 let userPrompt = ''
+            //                 if (selectedFiles.length > 0) {
+            //                     const pdfTexts = await Promise.all(selectedFiles.map(file => extractTextFromPDF(file)));
+            //                     userPrompt = `Based on the following earnings call transcripts:
+            //         ${pdfTexts.map(text => `${text.filename}:\n${text.content}`).join('\n\n')}
+
+            //         Please answer this question: ${question}`;
+            //                 } else {
+            //                     const audioInput = document.getElementById('audio-file');
+            //                     const file = audioInput.files[0];
+            //                     const audioText = await convertAudioToText(file);
+            //                     console.log(audioText)
+            //                     userPrompt = `Based on these texts regarding earnings call transcript:
+            // ${audioText}
+            // Please answer this question: ${question}`;
+            //                 }
+
+            //                 const systemPrompt = `You are an AI assistant specialized in analyzing earnings call transcripts. 
+            //         Analyze the provided transcripts and answer questions about financial performance, business strategy, and market trends.
+            //         Base your answers only on the information provided in the transcripts.`;
+
+            //                 const answer = await fetch("https://llmfoundry.straive.com/azure/openai/deployments/gpt-4o/chat/completions?api-version=2025-01-01-preview", {
+            //                     method: "POST",
+            //                     headers: { "Content-Type": "application/json" },
+            //                     credentials: "include",
+            //                     body: JSON.stringify({
+            //                         messages: [
+            //                             { role: "system", content: systemPrompt },
+            //                             { role: "user", content: userPrompt }
+            //                         ]
+            //                     })
+            //                 });
+
+            //                 if (!answer.ok) {
+            //                     throw new Error(`HTTP error! status: ${answer.status}`);
+            //                 }
+
+            //                 const data = await answer.json();
+            //                 let ans = data.choices[0].message.content
+            //                 return ans;
+
+            //             } catch (error) {
+            //                 console.error('Error getting answer:', error);
+            //                 return `Error: ${error.message}. Please try again.`;
+            //             } finally {
+            //                 qaLoading.style.display = 'none';
+            //             }
+            //         }
+            //         function addQuestionAnswer(question, answer) {
+            //             const qaContainer = document.getElementById('qa-container');
+            //             const qaDiv = document.createElement('div');
+            //             qaDiv.className = 'question-answer mb-4 p-3 border rounded';
+
+            //             // Convert markdown to HTML using marked
+            //             const formattedAnswer = marked.parse(answer);
+            //             qaDiv.innerHTML = `
+            //         <div class="question fw-bold mb-2">Q: ${question}</div>
+            //         <div class="answer">A: ${formattedAnswer}</div>
+            //     `;
+            //             qaContainer.appendChild(qaDiv);
+            //         }
+            async function handleQuestionClick(question) {
+                const qaLoading = document.getElementById('qa-loading');
+                qaLoading.style.display = 'block';
+
+                try {
+                    // Get only selected PDFs
+                    const selectedFiles = getSelectedPDFs();
+
+                    if (selectedFiles.length === 0) {
+                        const audioInput = document.getElementById('audio-file');
+                        if (audioInput.files.length === 0) {
+                            throw new Error('Please select at least one PDF or audio file');
+                        }
+                    }
+
+                    let userPrompt = '';
+                    if (selectedFiles.length > 0) {
+                        const pdfTexts = await Promise.all(selectedFiles.map(file => extractTextFromPDF(file)));
+                        userPrompt = `Based on the following earnings call transcripts:
 ${pdfTexts.map(text => `${text.filename}:\n${text.content}`).join('\n\n')}
 
 Please answer this question: ${question}`;
-                } else {
-                    const audioInput = document.getElementById('audio-file');
-                    const file = audioInput.files[0];
-                    const audioText = await convertAudioToText(file);
-                    console.log(audioText);
-                    userPrompt = `Based on these texts regarding earnings call transcript:
+                    } else {
+                        const audioInput = document.getElementById('audio-file');
+                        const file = audioInput.files[0];
+                        const audioText = await convertAudioToText(file);
+                        console.log(audioText);
+                        userPrompt = `Based on these texts regarding earnings call transcript:
 ${audioText}
 Please answer this question: ${question}`;
-                }
+                    }
 
-                const systemPrompt = `You are an AI assistant specialized in analyzing earnings call transcripts.
+                    const systemPrompt = `You are an AI assistant specialized in analyzing earnings call transcripts.
 Analyze the provided transcripts and answer questions about financial performance, business strategy, and market trends.
 Mention the page numbers from where the information is taken.
 Base your answers only on the information provided in the transcripts.`;
 
-                const answer = await fetch("https://llmfoundry.straive.com/azure/openai/deployments/gpt-4o/chat/completions?api-version=2025-01-01-preview", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    credentials: "include",
-                    body: JSON.stringify({
-                        messages: [
-                            { role: "system", content: systemPrompt },
-                            { role: "user", content: userPrompt }
-                        ]
-                    })
-                });
+                    const answer = await fetch("https://llmfoundry.straive.com/azure/openai/deployments/gpt-4o/chat/completions?api-version=2025-01-01-preview", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        credentials: "include",
+                        body: JSON.stringify({
+                            messages: [
+                                { role: "system", content: systemPrompt },
+                                { role: "user", content: userPrompt }
+                            ]
+                        })
+                    });
 
-                if (!answer.ok) {
-                    throw new Error(`HTTP error! status: ${answer.status}`);
+                    if (!answer.ok) {
+                        throw new Error(`HTTP error! status: ${answer.status}`);
+                    }
+
+                    const data = await answer.json();
+                    let ans = data.choices[0].message.content;
+
+                    // Add the new question and answer
+                    addQuestionAnswer(question, ans);
+                    previousQuestions.push(question);
+                    return ans;
+                } catch (error) {
+                    console.error('Error getting answer:', error);
+                    return `Error: ${error.message}. Please try again.`;
+                } finally {
+                    qaLoading.style.display = 'none';
                 }
-
-                const data = await answer.json();
-                let ans = data.choices[0].message.content;
-
-                // Add the new question and answer
-                addQuestionAnswer(question, ans);
-                previousQuestions.push(question);
-
-                return ans;
-            } catch (error) {
-                console.error('Error getting answer:', error);
-                return `Error: ${error.message}. Please try again.`;
-            } finally {
-                qaLoading.style.display = 'none';
             }
-        }
 
-        function resetQASection() {
-            const qaContainer = document.getElementById('qa-container');
-            qaContainer.innerHTML = '';
-            previousQuestions = [];
-        }
+            function resetQASection() {
+                const qaContainer = document.getElementById('qa-container');
+                qaContainer.innerHTML = '';
+                previousQuestions = [];
+            }
 
-        function addQuestionAnswer(question, answer) {
-            const qaContainer = document.getElementById('qa-container');
-            const qaDiv = document.createElement('div');
-            qaDiv.className = 'question-answer mb-4 p-3 border rounded';
+            function addQuestionAnswer(question, answer) {
+                const qaContainer = document.getElementById('qa-container');
+                const qaDiv = document.createElement('div');
+                qaDiv.className = 'question-answer mb-4 p-3 border rounded';
 
-            // Convert markdown to HTML using marked
-            const formattedAnswer = marked.parse(answer);
-            qaDiv.innerHTML = `
+                // Convert markdown to HTML using marked
+                const formattedAnswer = marked.parse(answer);
+                qaDiv.innerHTML = `
     <div class="question fw-bold mb-2">Q: ${question}</div>
     <div class="answer">A: ${formattedAnswer}</div>
 `;
-            qaContainer.appendChild(qaDiv);
-        }
+                qaContainer.appendChild(qaDiv);
+            }
 
-        // Add event listeners to the file input elements
-        const pdfInput = document.getElementById('contract-file');
-        const audioInput = document.getElementById('audio-file');
+            // Add event listeners to the file input elements
+            const pdfInput = document.getElementById('contract-file');
+            const audioInput = document.getElementById('audio-file');
 
-        pdfInput.addEventListener('change', resetQASection);
-        audioInput.addEventListener('change', resetQASection);
-    </script>
-</body>
+            pdfInput.addEventListener('change', resetQASection);
+            audioInput.addEventListener('change', resetQASection);
+        </script>
+    </body>
 
 </html>

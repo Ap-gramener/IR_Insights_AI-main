@@ -22,10 +22,26 @@
       margin: 1.5rem 0 !important;
     }
 
-    .navbar-brand {
-      font-size: 1.25rem !important;
-      margin-left: 10px;
-      margin-right: 10px;
+    .navbar {
+      background-color: #333;
+      /* Dark background */
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      padding: 10px 20px;
+    }
+
+    .navbar a {
+      color: white;
+      /* White text */
+      text-decoration: none;
+      /* padding: 14px 20px; */
+      display: block;
+    }
+
+    .logo {
+      margin-right: 20px;
+      /* Space between logo and links */
     }
 
     .btn {
@@ -87,13 +103,6 @@
       margin: 1.5rem 0 !important;
     }
 
-    /* Add a more specific style for the navbar brand */
-    .navbar .navbar-brand {
-      font-size: 1.25rem !important;
-      margin-left: 10px;
-      margin-right: 10px;
-    }
-
     .custom-scrollbar {
       scrollbar-width: thin;
       scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
@@ -144,27 +153,10 @@
 <body>
   <nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
     <!-- <div class="container-fluid"> -->
-    <a class="navbar-brand" href=".">DashBoard</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <div class="nav-item dropdown ms-auto" role="group" aria-label="Toggle dark mode" title="Toggle Dark Mode">
-        <button class="dark-theme-toggle btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown"
-          aria-expanded="false" aria-label="Toggle theme (light)">
-          <i class="bi bi-circle-half"></i> <span class="d-lg-none ms-2">Toggle theme</span>
-        </button>
-        <ul class="dropdown-menu dropdown-menu-end">
-          <li><button class="dropdown-item active" data-bs-theme-value="light"><i class="me-2 bi bi-sun-fill"></i>
-              Light</button></li>
-          <li><button class="dropdown-item" data-bs-theme-value="dark"><i class="me-2 bi bi-moon-stars-fill"></i>
-              Dark</button></li>
-          <li><button class="dropdown-item"><i class="me-2 bi bi-circle-half"></i> Auto</button></li>
-        </ul>
-      </div>
-    </div>
-    </div>
+    <a class="navbar-brand" href=".">
+      <img src="https://www.google.com/u/0/ac/images/logo.gif?uid=108567007302598457471&service=google_gsuite"
+        width="72px" height="36px" alt="Straive Logo" class="logo">
+    </a>
   </nav>
   <!-- <div id="questions-container" style="display: none;"></div> -->
   <div class="container-fluid">
@@ -186,7 +178,7 @@
       <div class="row g-4">
         <!-- Tile 1 -->
         <div class="col-md-4">
-          <a href="earnings.html" target="_blank" class="text-decoration-none">
+          <a href="earnings.html" class="text-decoration-none">
             <div class="feature-card p-4 text-center">
               <i class="bi bi-graph-up feature-icon"></i>
               <h3>Earnings Call Summary</h3>
@@ -196,7 +188,7 @@
 
         <!-- Tile 2 -->
         <div class="col-md-4">
-          <a href="assistant.html" target="_blank" class="text-decoration-none">
+          <a href="assistant.html" class="text-decoration-none">
             <div class="feature-card p-4 text-center">
               <i class="bi bi-chat-dots feature-icon"></i>
               <h3>IR AI Assistant</h3>
@@ -206,7 +198,7 @@
 
         <!-- Tile 3 -->
         <div class="col-md-4">
-          <a href="insights.html" target="_blank" class="text-decoration-none">
+          <a href="insights.html" class="text-decoration-none">
             <div class="feature-card p-4 text-center">
               <i class="bi bi-bar-chart feature-icon"></i>
               <h3>Competitor's Insights</h3>

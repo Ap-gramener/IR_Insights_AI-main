@@ -30,7 +30,7 @@
     .main-container {
       display: none;
       flex-direction: row;
-      height: calc(100vh);
+      height: calc(100vh - 67px);
       /* Subtract navbar + footer */
       overflow: hidden;
     }
@@ -40,7 +40,7 @@
       width: 250px;
       background-color: #2a3135;
       color: white;
-      border-right: 1px solid #ddd;
+      border-right: 2px solid #ddd;
       padding: 1rem;
     }
 
@@ -64,6 +64,7 @@
       position: relative;
       background-color: #f8f9fa;
       overflow-y: auto;
+      border: 2px solid #ccc;
     }
 
     /* Larger chat history width */
@@ -179,11 +180,38 @@
       display: block;
       margin: 0 auto;
     }
+
+    .navbar {
+      background-color: #2a3135;
+      /* Dark background */
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      padding: 10px 20px;
+    }
+
+    .navbar a {
+      color: white;
+      /* White text */
+      text-decoration: none;
+      /* padding: 14px 20px; */
+      display: block;
+    }
+
+    .logo {
+      margin-right: 20px;
+      /* Space between logo and links */
+    }
   </style>
 </head>
 
 <body>
-
+  <nav class="navbar navbar-expand-lg">
+    <a class="navbar-brand" href="index.html">
+      <img src="https://www.google.com/u/0/ac/images/logo.gif?uid=108567007302598457471&service=google_gsuite"
+        width="72px" height="36px" alt="Straive Logo" class="logo">
+    </a>
+  </nav>
   <!-- Start Screen -->
   <div class="flex-row-center">
     <div id="startScreen">
@@ -203,7 +231,8 @@
   <main id="mainContainer" class="main-container">
     <!-- Sidebar -->
     <aside id="sidebar">
-      <h5>Select Company</h5>
+      <h2>IR AI Assistant</h2><br><br>
+      <h6>Select Company</h6>
       <select id="companySelect" class="form-select mb-3">
         <option value="">Select a company</option>
       </select>
@@ -218,8 +247,17 @@
     <div class="chat-area">
       <!-- Role Input (shown after start chat) -->
       <div id="role-input">
+        <div class="app-description text-center" style="margin-top: 20px; font-size: small;">
+          <h5 class="mb-2">
+            <i class="bi bi-info-circle-fill me-2"></i>
+            About this Tool
+          </h5>
+          <p>
+            IR AI Assistant extracts relevant context from the given files based on question using AI Agent.
+          </p>
+        </div>
         <div class="input-group mt-3 mb-3">
-          <h5>User Prompt - &nbsp;&nbsp;</h5>
+          <h6>Additional Info: &nbsp;&nbsp;</h6><br>
           <!-- <input type="text" id="roleText" class="form-control" value='Enter prompt here' placeholder="Role" /> -->
           <textarea id="roleText" class="form-control" rows="3" placeholder="Role">You are a document assistant that helps the Investor Relations team to find the information in a context.
 Provide the accurate response based only on the context and inputs.
@@ -229,7 +267,6 @@ Please give more weightage to the recent documents as you draft the answers.
 Please cite relevant documents reference for the different parts of the answers.</textarea>
         </div>
       </div>
-
       <!-- Question Input (shown after start chat) -->
       <div id="text">
         <div class="input-group mt-2 mb-2">

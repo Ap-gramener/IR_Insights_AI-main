@@ -52,7 +52,7 @@
       width: 250px;
       background-color: #2a3135;
       /* Blue shade */
-      padding: 20px;
+      padding: 15px 20px;
     }
 
     .sidebar h2 {
@@ -98,14 +98,47 @@
     .tab.active {
       display: block;
     }
+
+    .navbar {
+      background-color: #2a3135;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      padding: 10px 20px;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+    }
+
+    .navbar a {
+      color: white;
+      /* White text */
+      text-decoration: none;
+      /* padding: 14px 20px; */
+      display: block;
+    }
+
+    .logo {
+      margin-right: 20px;
+      /* Space between logo and links */
+    }
   </style>
 </head>
 
 <body class="bg-light">
+  <nav class="navbar navbar-expand-lg">
+    <a class="navbar-brand" href="index.html">
+      <img src="https://www.google.com/u/0/ac/images/logo.gif?uid=108567007302598457471&service=google_gsuite"
+        width="72px" height="36px" alt="Straive Logo" class="logo">
+    </a>
+  </nav>
+
   <div class="sidebar">
+    <br><br>
     <h2>Competitor's Insights</h2>
     <button class="btn" id="showSummary">Comparison Summary</button>
     <button class="btn" id="showSentiment">Sentiment Analysis</button>
+    <button class="btn" id="showFinancialMetrics">Financial Metrics</button>
     <button class="btn" id="showChatbot">Chatbot</button>
     <button class="btn" id="showKeywordSearch">Keyword Search</button>
   </div>
@@ -168,6 +201,20 @@
         </div>
       </div>
 
+      <div id="financialMetricsTab" class="tab">
+        <div class="card mb-4">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Financial Metrics and Strategic Initiatives</h5>
+            <button class="btn btn-primary" id="generateMetrics">
+              <i class="bi bi-table"></i> Generate Table
+            </button>
+          </div>
+          <div class="card-body">
+            <div id="finmetrics"></div>
+          </div>
+        </div>
+      </div>
+
       <div id="chatbotTab" class="tab">
         <div class="card">
           <div class="card-header">
@@ -179,7 +226,7 @@
                 placeholder="Ask a question about the companies..."></textarea>
             </div>
             <div class="mb-3">
-              <label for="clientFilter2">Filter by Client:</label>
+              <label for="clientFilter2">Select Client:</label>
               <select id="clientFilter2">
                 <option value="">All</option>
                 <option value="Enbridge">Enbridge</option>
@@ -187,7 +234,9 @@
                 <option value="Pembina">Pembina</option>
               </select>
 
-              <label for="competitorFilter2">Filter by Competitor:</label>
+              <label
+                for="competitorFilter2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Select
+                Competitor:</label>
               <select id="competitorFilter2">
                 <option value="">All</option>
                 <option value="Enbridge">Enbridge</option>
@@ -195,7 +244,9 @@
                 <option value="Pembina">Pembina</option>
               </select>
 
-              <label for="filenameFilterQA">Filter by Filename:</label>
+              <label
+                for="filenameFilterQA">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Select
+                Filename:</label>
               <select id="filenameFilterQA">
                 <option value="">All</option>
                 <option value="Annual_Report">Annual Report</option>
@@ -229,7 +280,7 @@
             placeholder="Enter keyword (e.g., capex, emissions, LNG)">
           <br>
           <div>
-            <label for="companyFilter">Filter by Company:</label>
+            <label for="companyFilter">Select Company:</label>
             <select id="companyFilter">
               <option value="">All</option>
               <option value="Enbridge">Enbridge</option>
@@ -237,7 +288,9 @@
               <option value="Pembina">Pembina</option>
             </select>
 
-            <label for="filenameFilter">Filter by Filename:</label>
+            <label
+              for="filenameFilter">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Select
+              Filename:</label>
             <select id="filenameFilter">
               <option value="">All</option>
               <option value="Annual_Report">Annual Report</option>
@@ -267,6 +320,10 @@
 
     document.getElementById('showSentiment').addEventListener('click', function () {
       setActiveTab('sentimentTab');
+    });
+
+    document.getElementById('showFinancialMetrics').addEventListener('click', function () {
+      setActiveTab('financialMetricsTab');
     });
 
     document.getElementById('showChatbot').addEventListener('click', function () {
@@ -11458,90 +11515,90 @@ Unknown Analyst Just revisiting the ethane strategy here. Just want to talk abou
         // Append the table to the document body or a specific container
         document.body.appendChild(table);
 
-        // Add the companies' content
-        const fin_metrics = {
-          "Enbridge": {
-            "stock": "Record earnings, consistent dividend increases, successful acquisitions, strategic asset sales, continued growth and stability.",
-            "capex": "Organic projects backlog increased by over $8 billion, with $5 billion of gas and renewable projects added in 2024.",
-            "merger": "Closed acquisition of 3 premier U.S. natural gas utilities and announced 3 tuck-in acquisitions of Permian and Gulf Coast assets. Sold interest in Alliance and Aux Sable and East to West Tie Line for approximately $3.2 billion.",
-            "debt": "Maintaining a long-held leverage target of 4.5 to 5x; expect contributions from acquired and in-service assets to benefit metrics through 2025."
-          },
-          "TC Energy": {
-            "stock": "Declared Q1 2025 dividend of $0.85 per share, a 3.3% increase from previous quarter.",
-            "capex": "Net CapEx limit of $6 billion to $7 billion through 2025, with plans to add $8 billion in projects between 2026 and 2030. Placed $7 billion of assets into service in 2024 with $1.3 billion more capital reductions by 2027.",
-            "merger": "Completed spin-off of Liquids business; partnership with CFE on Southeast Gateway.",
-            "debt": "Achieved a reduction in debt-to-EBITDA by 0.6x since 2022. Current leverage is near the long-term target of 4.75x debt-to-EBITDA."
-          },
-          "Pembina": {
-            "stock": "Increased common share dividend by 3.4% due to strong cash flow and financial results.",
-            "capex": "Capital investment required for Dow supply agreement reduced to less than $300 million. Approximately $4 billion secured projects under construction and over $4 billion additional projects in development.",
-            "merger": "Fully consolidated ownership of Alliance and Aux Sable. Acquired rights for NGL extraction from the Yellowhead Mainline.",
-            "debt": "Maintains a debt-to-adjusted EBITDA ratio of 3.5x, at the low end of their targeted range reflecting a strong balance sheet and a BBB credit rating."
-          }
-        }
-        let companyMetrics = fin_metrics;
+        // Add the companies' metrics
+        // const fin_metrics = {
+        //   "Enbridge": {
+        //     "stock": "Record earnings, consistent dividend increases, successful acquisitions, strategic asset sales, continued growth and stability.",
+        //     "capex": "Organic projects backlog increased by over $8 billion, with $5 billion of gas and renewable projects added in 2024.",
+        //     "merger": "Closed acquisition of 3 premier U.S. natural gas utilities and announced 3 tuck-in acquisitions of Permian and Gulf Coast assets. Sold interest in Alliance and Aux Sable and East to West Tie Line for approximately $3.2 billion.",
+        //     "debt": "Maintaining a long-held leverage target of 4.5 to 5x; expect contributions from acquired and in-service assets to benefit metrics through 2025."
+        //   },
+        //   "TC Energy": {
+        //     "stock": "Declared Q1 2025 dividend of $0.85 per share, a 3.3% increase from previous quarter.",
+        //     "capex": "Net CapEx limit of $6 billion to $7 billion through 2025, with plans to add $8 billion in projects between 2026 and 2030. Placed $7 billion of assets into service in 2024 with $1.3 billion more capital reductions by 2027.",
+        //     "merger": "Completed spin-off of Liquids business; partnership with CFE on Southeast Gateway.",
+        //     "debt": "Achieved a reduction in debt-to-EBITDA by 0.6x since 2022. Current leverage is near the long-term target of 4.75x debt-to-EBITDA."
+        //   },
+        //   "Pembina": {
+        //     "stock": "Increased common share dividend by 3.4% due to strong cash flow and financial results.",
+        //     "capex": "Capital investment required for Dow supply agreement reduced to less than $300 million. Approximately $4 billion secured projects under construction and over $4 billion additional projects in development.",
+        //     "merger": "Fully consolidated ownership of Alliance and Aux Sable. Acquired rights for NGL extraction from the Yellowhead Mainline.",
+        //     "debt": "Maintains a debt-to-adjusted EBITDA ratio of 3.5x, at the low end of their targeted range reflecting a strong balance sheet and a BBB credit rating."
+        //   }
+        // }
+        // let companyMetrics = fin_metrics;
 
-        // Create the second table
-        const table2 = document.createElement('table');
-        table2.className = 'table mt-4';
+        // // Create the second table
+        // const table2 = document.createElement('table');
+        // table2.className = 'table mt-4';
 
-        // Create table header
-        const thead2 = document.createElement('thead');
-        const headerRow2 = document.createElement('tr');
-        ['Company', 'Stock buyback/Dividends', 'Capex/New Projects', 'M&A/Divestments', 'Debt trend'].forEach(headerText => {
-          const th = document.createElement('th');
-          th.textContent = headerText;
-          headerRow2.appendChild(th);
-        });
-        thead2.appendChild(headerRow2);
-        table2.appendChild(thead2);
+        // // Create table header
+        // const thead2 = document.createElement('thead');
+        // const headerRow2 = document.createElement('tr');
+        // ['Company', 'Stock buyback/Dividends', 'Capex/New Projects', 'M&A/Divestments', 'Debt trend'].forEach(headerText => {
+        //   const th = document.createElement('th');
+        //   th.textContent = headerText;
+        //   headerRow2.appendChild(th);
+        // });
+        // thead2.appendChild(headerRow2);
+        // table2.appendChild(thead2);
 
-        // Create table body
-        const tbody2 = document.createElement('tbody');
-        companies.forEach(company => {
-          const metrics = companyMetrics[company] || {}; // Use empty object if company not found
-          const row = document.createElement('tr');
+        // // Create table body
+        // const tbody2 = document.createElement('tbody');
+        // companies.forEach(company => {
+        //   const metrics = companyMetrics[company] || {}; // Use empty object if company not found
+        //   const row = document.createElement('tr');
 
-          // Company name
-          const tdCompany = document.createElement('td');
-          tdCompany.textContent = company;
-          row.appendChild(tdCompany);
+        //   // Company name
+        //   const tdCompany = document.createElement('td');
+        //   tdCompany.textContent = company;
+        //   row.appendChild(tdCompany);
 
-          // Dividends
-          const tdDividends = document.createElement('td');
-          tdDividends.textContent = metrics.stock || 'N/A';
-          row.appendChild(tdDividends);
+        //   // Dividends
+        //   const tdDividends = document.createElement('td');
+        //   tdDividends.textContent = metrics.stock || 'N/A';
+        //   row.appendChild(tdDividends);
 
-          // Capex
-          const tdCapex = document.createElement('td');
-          tdCapex.textContent = metrics.capex || 'N/A';
-          row.appendChild(tdCapex);
+        //   // Capex
+        //   const tdCapex = document.createElement('td');
+        //   tdCapex.textContent = metrics.capex || 'N/A';
+        //   row.appendChild(tdCapex);
 
-          // M&A
-          const tdMA = document.createElement('td');
-          tdMA.textContent = metrics.merger || 'N/A';
-          row.appendChild(tdMA);
+        //   // M&A
+        //   const tdMA = document.createElement('td');
+        //   tdMA.textContent = metrics.merger || 'N/A';
+        //   row.appendChild(tdMA);
 
-          // Debt
-          const tdDebt = document.createElement('td');
-          tdDebt.textContent = metrics.debt || 'N/A';
-          row.appendChild(tdDebt);
+        //   // Debt
+        //   const tdDebt = document.createElement('td');
+        //   tdDebt.textContent = metrics.debt || 'N/A';
+        //   row.appendChild(tdDebt);
 
-          tbody2.appendChild(row);
-        });
-        table2.appendChild(tbody2);
+        //   tbody2.appendChild(row);
+        // });
+        // table2.appendChild(tbody2);
 
         // Add a heading for the second table
-        const table2Heading = document.createElement('h4');
-        table2Heading.className = 'mt-4 mb-3';
-        table2Heading.textContent = 'Financial Metrics and Strategic Initiatives';
+        // const table2Heading = document.createElement('h4');
+        // table2Heading.className = 'mt-4 mb-3';
+        // table2Heading.textContent = 'Financial Metrics and Strategic Initiatives';
 
         // Append both tables to the sentiment content
         const sentimentContent = document.getElementById('sentimentContent');
         sentimentContent.innerHTML = '';
         sentimentContent.appendChild(table);  // First table (existing sentiment analysis)
-        sentimentContent.appendChild(table2Heading);  // Heading for second table
-        sentimentContent.appendChild(table2);  // Second table (new metrics)
+        // sentimentContent.appendChild(table2Heading);  // Heading for second table
+        // sentimentContent.appendChild(table2);  // Second table (new metrics)
       } catch (error) {
         document.getElementById('sentimentContent').innerHTML =
           `<div class="alert alert-danger">Error analyzing sentiment: ${error.message}</div>`;
@@ -11549,6 +11606,94 @@ Unknown Analyst Just revisiting the ethane strategy here. Just want to talk abou
 
       document.getElementById('sentimentLoading').classList.remove('active');
     });
+
+    //Financial Metrics
+    document.getElementById('generateMetrics').addEventListener('click', function () {
+      generateFinancialMetrics();
+    });
+
+    function generateFinancialMetrics() {
+      document.getElementById('sentimentContent').innerHTML = '';
+
+      const companies = ['Enbridge', 'TC Energy', 'Pembina'];
+      // Add the companies' metrics
+      const fin_metrics = {
+        "Enbridge": {
+          "stock": "Record earnings, consistent dividend increases, successful acquisitions, strategic asset sales, continued growth and stability.",
+          "capex": "Organic projects backlog increased by over $8 billion, with $5 billion of gas and renewable projects added in 2024.",
+          "merger": "Closed acquisition of 3 premier U.S. natural gas utilities and announced 3 tuck-in acquisitions of Permian and Gulf Coast assets. Sold interest in Alliance and Aux Sable and East to West Tie Line for approximately $3.2 billion.",
+          "debt": "Maintaining a long-held leverage target of 4.5 to 5x; expect contributions from acquired and in-service assets to benefit metrics through 2025."
+        },
+        "TC Energy": {
+          "stock": "Declared Q1 2025 dividend of $0.85 per share, a 3.3% increase from previous quarter.",
+          "capex": "Net CapEx limit of $6 billion to $7 billion through 2025, with plans to add $8 billion in projects between 2026 and 2030. Placed $7 billion of assets into service in 2024 with $1.3 billion more capital reductions by 2027.",
+          "merger": "Completed spin-off of Liquids business; partnership with CFE on Southeast Gateway.",
+          "debt": "Achieved a reduction in debt-to-EBITDA by 0.6x since 2022. Current leverage is near the long-term target of 4.75x debt-to-EBITDA."
+        },
+        "Pembina": {
+          "stock": "Increased common share dividend by 3.4% due to strong cash flow and financial results.",
+          "capex": "Capital investment required for Dow supply agreement reduced to less than $300 million. Approximately $4 billion secured projects under construction and over $4 billion additional projects in development.",
+          "merger": "Fully consolidated ownership of Alliance and Aux Sable. Acquired rights for NGL extraction from the Yellowhead Mainline.",
+          "debt": "Maintains a debt-to-adjusted EBITDA ratio of 3.5x, at the low end of their targeted range reflecting a strong balance sheet and a BBB credit rating."
+        }
+      }
+      let companyMetrics = fin_metrics;
+
+      // Create the second table
+      const table2 = document.createElement('table');
+      table2.className = 'table mt-4';
+
+      // Create table header
+      const thead2 = document.createElement('thead');
+      const headerRow2 = document.createElement('tr');
+      ['Company', 'Stock buyback/Dividends', 'Capex/New Projects', 'M&A/Divestments', 'Debt trend'].forEach(headerText => {
+        const th = document.createElement('th');
+        th.textContent = headerText;
+        headerRow2.appendChild(th);
+      });
+      thead2.appendChild(headerRow2);
+      table2.appendChild(thead2);
+
+      // Create table body
+      const tbody2 = document.createElement('tbody');
+      companies.forEach(company => {
+        const metrics = companyMetrics[company] || {}; // Use empty object if company not found
+        const row = document.createElement('tr');
+
+        // Company name
+        const tdCompany = document.createElement('td');
+        tdCompany.textContent = company;
+        row.appendChild(tdCompany);
+
+        // Dividends
+        const tdDividends = document.createElement('td');
+        tdDividends.textContent = metrics.stock || 'N/A';
+        row.appendChild(tdDividends);
+
+        // Capex
+        const tdCapex = document.createElement('td');
+        tdCapex.textContent = metrics.capex || 'N/A';
+        row.appendChild(tdCapex);
+
+        // M&A
+        const tdMA = document.createElement('td');
+        tdMA.textContent = metrics.merger || 'N/A';
+        row.appendChild(tdMA);
+
+        // Debt
+        const tdDebt = document.createElement('td');
+        tdDebt.textContent = metrics.debt || 'N/A';
+        row.appendChild(tdDebt);
+
+        tbody2.appendChild(row);
+      });
+      table2.appendChild(tbody2);
+
+      // Display table in the finmetrics div
+      const finmetricsDiv = document.getElementById('finmetrics');
+      finmetricsDiv.innerHTML = ''; // Clear previous content
+      finmetricsDiv.appendChild(table2); // Append the table element
+    }
 
     // Q&A Functionality
     document.getElementById('askQuestion').addEventListener('click', async () => {
