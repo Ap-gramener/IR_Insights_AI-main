@@ -239,13 +239,13 @@ Please cite relevant documents reference for the different parts of the answers.
           </button>
         </div>
         <!-- New Button for Sample Questions -->
-        <button id="sampleQuestionsButton" class="btn btn-success mb-3" type="button">
-          Select from Sample Questions
-        </button>
+        <!-- <button id="sampleQuestionsButton" class="btn btn-success mb-3" type="button">
+          Show Sample Questions
+        </button> -->
       </div>
 
       <!-- Suggested Questions (clickable links) -->
-      <div id="suggestedQuestions"></div>
+      <!-- <div id="suggestedQuestions"></div> -->
 
       <!-- Chat History (answer box is bigger now) -->
       <div id="history"></div>
@@ -11185,122 +11185,127 @@ Unknown Analyst Just revisiting the ethane strategy here. Just want to talk abou
       roleText.focus();
     });
 
-    document.getElementById('sampleQuestionsButton').addEventListener('click', () => {
-      const selectedCompany = companySelect.value;
-      if (!selectedCompany) {
-        alert('Please select a company');
-        return; // Exit the function if no company is selected
-      }
+    // document.getElementById('sampleQuestionsButton').addEventListener('click', () => {
+    //   const selectedCompany = companySelect.value;
+    //   if (!selectedCompany) {
+    //     alert('Please select a company');
+    //     return; // Exit the function if no company is selected
+    //   }
 
-      generateSuggestedQuestions();
-    });
+    //   generateSuggestedQuestions();
+    // });
 
     /***********************************************
      * Generate 3 Suggested Questions
      ***********************************************/
-    async function generateSuggestedQuestions() {
-      if (!documents.length) {
-        suggestedDiv.innerHTML = '';
-        return;
-      }
-      showLoader(true);
+    //     async function generateSuggestedQuestions() {
+    //       if (!documents.length) {
+    //         suggestedDiv.innerHTML = '';
+    //         return;
+    //       }
+    //       showLoader(true);
 
-      const selectedCompany = companySelect.value; // Get the selected company
-      const selectedDocuments = documents.filter(d => d.isChecked).map(d => d.name); // Get selected document names
+    //       const selectedCompany = companySelect.value; // Get the selected company
+    //       const selectedDocuments = documents.filter(d => d.isChecked).map(d => d.name); // Get selected document names
 
-      const promptForQuestions = `
-User has these files from ${selectedCompany}:
-${selectedDocuments}
+    //       const promptForQuestions = `
+    // User has these files from ${selectedCompany}:
+    // ${selectedDocuments}
 
-Suggest 3 possible questions about them as separate lines.
+    // Suggest 3 possible questions about them as separate lines.
 
-At least one question should involve a topic from all the files.
+    // At least one question should involve a topic from all the files.
 
-Just three questions and no bullet points, nothing else.
-    `;
+    // Just three questions and no bullet points, nothing else.
+    //     `;
 
-      const payload = {
-        system_instruction: {
-          parts: [{ text: "You are a helpful assistant that generates possible user questions based on file contents." }]
-        },
-        contents: [
-          { role: "user", parts: [{ text: promptForQuestions }] }
-        ],
-        generationConfig: { temperature: 0.5 }
-      };
+    //       const payload = {
+    //         system_instruction: {
+    //           parts: [{ text: "You are a helpful assistant that generates possible user questions based on file contents." }]
+    //         },
+    //         contents: [
+    //           { role: "user", parts: [{ text: promptForQuestions }] }
+    //         ],
+    //         generationConfig: { temperature: 0.5 }
+    //       };
 
-      try {
-        const resp = await fetch(
-          "https://llmfoundry.straive.com/gemini/v1beta/models/gemini-2.0-flash-001:streamGenerateContent",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-            body: JSON.stringify(payload)
-          }
-        );
-        const json = await resp.json();
-        let answerText = parseLLMResponse(json);
-        showSuggestedQuestions(answerText);
-      } catch {
-        showSuggestedQuestions("");
-      } finally {
-        showLoader(false);
-      }
-    }
+    //       try {
+    //         const resp = await fetch(
+    //           "https://llmfoundry.straive.com/gemini/v1beta/models/gemini-2.0-flash-001:streamGenerateContent",
+    //           {
+    //             method: "POST",
+    //             headers: { "Content-Type": "application/json" },
+    //             credentials: "include",
+    //             body: JSON.stringify(payload)
+    //           }
+    //         );
+    //         const json = await resp.json();
+    //         let answerText = parseLLMResponse(json);
+    //         showSuggestedQuestions(answerText);
+    //       } catch {
+    //         showSuggestedQuestions("");
+    //       } finally {
+    //         showLoader(false);
+    //       }
+    //     }
 
-    function parseLLMResponse(json) {
-      let answerText = "";
-      if (Array.isArray(json)) {
-        for (const chunk of json) {
-          const cand = chunk.candidates?.[0];
-          if (cand?.content?.parts?.length) {
-            answerText += cand.content.parts.map(p => p.text).join("");
-          }
-        }
-      } else if (json.contents) {
-        const parts = json.contents[0].candidates[0].content.parts;
-        answerText = parts.map(p => p.text).join("");
-      }
-      return answerText.trim();
-    }
+    // function parseLLMResponse(json) {
+    //   let answerText = "";
+    //   if (Array.isArray(json)) {
+    //     for (const chunk of json) {
+    //       const cand = chunk.candidates?.[0];
+    //       if (cand?.content?.parts?.length) {
+    //         answerText += cand.content.parts.map(p => p.text).join("");
+    //       }
+    //     }
+    //   } else if (json.contents) {
+    //     const parts = json.contents[0].candidates[0].content.parts;
+    //     answerText = parts.map(p => p.text).join("");
+    //   }
+    //   return answerText.trim();
+    // }
 
-    function showSuggestedQuestions(answerText) {
-      suggestedDiv.innerHTML = '';
-      if (!answerText) return;
+    // function showSuggestedQuestions(answerText) {
+    //   suggestedDiv.innerHTML = '';
+    //   if (!answerText) return;
 
-      const lines = answerText.split('\n').map(l => l.trim()).filter(Boolean);
-      if (!lines.length) return;
+    //   const lines = answerText.split('\n').map(l => l.trim()).filter(Boolean);
+    //   if (!lines.length) return;
 
-      const heading = document.createElement('h6');
-      heading.textContent = "Suggested Questions (click to use):";
-      suggestedDiv.appendChild(heading);
+    //   const heading = document.createElement('h6');
+    //   heading.textContent = "Suggested Questions (click to use):";
+    //   suggestedDiv.appendChild(heading);
 
-      const ul = document.createElement('ul');
-      ul.classList.add('list-group');
-      lines.forEach(line => {
-        // Make each question a clickable link
-        const li = document.createElement('li');
-        li.classList.add('list-group-item', 'p-1');
+    //   const ul = document.createElement('ul');
+    //   ul.classList.add('list-group');
+    //   lines.forEach(line => {
+    //     // Make each question a clickable link
+    //     const li = document.createElement('li');
+    //     li.classList.add('list-group-item', 'p-1');
 
-        // Create an anchor tag
-        const link = document.createElement('a');
-        link.href = "#";
-        link.textContent = line;
-        link.classList.add('text-decoration-none'); // remove underline if you like
-        link.addEventListener('click', (e) => {
-          e.preventDefault();
-          chatText.value = line;
-          chatText.focus();
-          // Hide the suggestion box
-          suggestedDiv.innerHTML = '';
-        });
+    //     // Create an anchor tag
+    //     const link = document.createElement('a');
+    //     link.href = "#";
+    //     link.textContent = line;
+    //     link.classList.add('text-decoration-none'); // remove underline if you like
+    //     link.addEventListener('click', (e) => {
+    //       e.preventDefault();
+    //       chatText.value = line;
+    //       const question = chatText.value.trim();
+    //       if (addToHistory(question, "user")) {
+    //         replayChat(question);
+    //         chatText.value = '';
+    //         chatText.focus();
+    //       }
+    //       // Hide the suggestion box
+    //       suggestedDiv.innerHTML = '';
+    //     });
 
-        li.appendChild(link);
-        ul.appendChild(li);
-      });
-      suggestedDiv.appendChild(ul);
-    }
+    //     li.appendChild(link);
+    //     ul.appendChild(li);
+    //   });
+    //   suggestedDiv.appendChild(ul);
+    // }
 
     /***********************************************
      * Chat Logic
