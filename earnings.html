@@ -27,17 +27,36 @@
 
         .layout-container {
             display: grid;
-            grid-template-columns: 30% 70%;
+            grid-template-columns: 100%;
+            /* Make the center panel take full width */
             gap: 20px;
             padding: 20px;
         }
 
-        .left-panel,
-        .center-panel {
-            background: white;
-            border-radius: 8px;
+        .qa-layout {
+            display: flex;
+            height: 100%;
+            /* Full height of the viewport */
+        }
+
+        .left-panel {
+            width: 30%;
+            /* Adjust as needed */
             padding: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            /* Optional padding */
+        }
+
+        .center-panel {
+            width: 100%;
+            /* Adjust as needed */
+            padding: 20px;
+            /* Optional padding */
+            overflow-y: auto;
+            /* Enable vertical scrolling */
+            height: calc(100vh - 80px);
+            /* Adjust height to fit within the viewport */
+            border-left: 1px solid #ccc;
+            /* Optional border for separation */
         }
 
         .right-panel {
@@ -96,10 +115,6 @@
         .loading {
             text-align: center;
             margin: 10px 0;
-        }
-
-        .footer-title {
-            font-weight: normal !important;
         }
 
         .sentiment-table {
@@ -165,134 +180,197 @@
         .summary-text p {
             margin-bottom: 1rem;
         }
+
+        .sidebar {
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            background-color: #2a3135;
+            /* Blue shade */
+            padding: 20px;
+        }
+
+        .sidebar h2 {
+            color: white;
+            margin-bottom: 30px;
+            /* Increased margin for separation */
+        }
+
+        .sidebar .btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            /* Increased margin for button separation */
+            text-align: left;
+        }
+
+        .sidebar .btn:hover {
+            background-color: darkgrey;
+            /* Darker blue on hover */
+        }
+
+        .content {
+            margin-left: 260px;
+            /* Adjust for sidebar width */
+            padding: 20px;
+        }
+
+        .tab-content {
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 20px;
+            height: 100%;
+        }
+
+        .tab {
+            display: none;
+        }
+
+        .tab.active {
+            display: block;
+        }
     </style>
 </head>
 
 <body>
-    <h1 class="text-center">Earnings Calls Summary</h1>
-    <div class="layout-container">
-        <!-- Left Panel -->
-        <div class="left-panel">
-            <h4>Upload Files</h4>
-            <div class="mb-3">
-                <label class="form-label">PDF Files</label>
-                <input type="file" class="form-control" id="contract-file" accept=".pdf" />
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Audio Files</label>
-                <input type="file" class="form-control" id="audio-file" accept="audio/*" />
-            </div>
-            <div class="pdf-list" id="pdf-list"></div>
-            <button class="btn btn-primary" id="generate-summary">Generate Summary</button>
-            <!-- <button class="btn btn-primary" id="generate-heatmap">Generate Graph</button>
-            <button class="btn btn-secondary" id="analyze-sentiment">Analyze Sentiment</button>
-            <button class="btn btn-secondary" id="analyze-trend">Analyze Trend</button> -->
+    <div class="sidebar">
+        <h2>Earnings Call Summary</h2>
+        <button class="btn" id="upload-file-tab">Upload a File</button>
+        <button class="btn" id="generate-summary-tab">Generate Summary</button>
+        <button class="btn" id="graph-tab">Graph</button>
+        <button class="btn" id="sentiment-analysis-tab">Sentiment Analysis</button>
+        <button class="btn" id="qa-tab">Q & A</button>
+    </div>
 
-            <div class="chat-container">
-                <h4 class="mt-4">Ask Questions</h4>
-                <div class="chat-input mb-3">
-                    <textarea class="form-control mb-2" id="user-question" placeholder="Ask a question..."></textarea>
-                    <button class="btn btn-primary" id="ask-question">Ask Question</button>
-                </div>
-                <div class="sample-questions">
-                    <h5 class="mb-2">Sample Questions</h5>
-                    <select class="form-select" id="sample-questions">
-                        <option value="">Select a sample question</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
-        <!-- Center Panel -->
-        <div class="center-panel">
-            <!-- Summary Section -->
-            <div id="summary-container" class="mb-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h3>Summary</h3>
+    <div class="content">
+        <div class="layout-container">
+            <!-- Center Panel -->
+            <div class="center-panel">
+                <!-- Upload Files Section -->
+                <div id="upload-file-content" class="tab active">
+                    <h4>Upload Files</h4>
+                    <h6>Upload either an Earning Call Transcript pdf file or an Earning Call Transcript audio file</h6>
+                    <br><br>
+                    <div class="mb-3">
+                        <label class="form-label">PDF File</label>
+                        <input type="file" class="form-control" id="contract-file" accept=".pdf" />
                     </div>
-                    <div class="card-body">
-                        <div id="summary-loading" class="loading" style="display: none;">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Loading...</span>
+                    <div class="mb-3">
+                        <label class="form-label">Audio File</label>
+                        <input type="file" class="form-control" id="audio-file" accept="audio/*" />
+                    </div>
+                    <div class="pdf-list" id="pdf-list"></div>
+                </div>
+                <!-- Generate Summary Button -->
+                <div id="generate-summary-content" class="tab">
+                    <h5>Click on Generate to generate the Summary, Graph and Sentiments</h5>
+                    <br>
+                    <button class="btn btn-secondary" id="generate-summary"
+                        style="width: 200px; display: block; margin-left: auto; margin-right: auto; text-align: center;">Generate</button>
+                </div>
+
+                <!-- Summary Section -->
+                <div id="summary-container" class="mb-4 tab">
+                    <br><br>
+                    <div class="card">
+                        <div class="card-header" style="text-align: center;">
+                            <h3>Summary</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="summary-loading" class="loading" style="display: none;">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p>Generating summary...</p>
                             </div>
-                            <p>Generating summary...</p>
+                            <div id="summary-content"></div>
                         </div>
-                        <div id="summary-content"></div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Analysis Section -->
-            <div id="analysis-container" class="mb-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h3>Analysis</h3>
-                    </div>
-                    <div class="card-body">
-                        <div id="analysis-loading" class="loading" style="display: none;">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Loading...</span>
+                <!-- Analysis Section -->
+                <div id="analysis-container" class="mb-4 tab">
+                    <div class="card">
+                        <div class="card-header" style="text-align: center;">
+                            <h3>Graph</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="analysis-loading" class="loading" style="display: none;">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p>Generating analysis...</p>
                             </div>
-                            <p>Generating analysis...</p>
+                            <div id="analysis-content"></div>
+                            <div id="describe-content"></div>
                         </div>
-                        <div id="analysis-content"></div>
-                        <div id="describe-content"></div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Sentiment Analysis Section -->
-            <div id="sentiment-analysis-container" class="mb-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h3>Sentiment Analysis</h3>
-                    </div>
-                    <div class="card-body">
-                        <div id="sentiment-loading" class="loading" style="display: none;">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Loading...</span>
+                <!-- Sentiment Analysis Section -->
+                <div id="sentiment-analysis-container" class="mb-4 tab">
+                    <div class="card">
+                        <div class="card-header" style="text-align: center;">
+                            <h3>Sentiment Analysis</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="sentiment-loading" class="loading" style="display: none;">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p>Analyzing sentiment...</p>
                             </div>
-                            <p>Analyzing sentiment...</p>
+                            <div id="sentiment-content"></div>
                         </div>
-                        <div id="sentiment-content"></div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Trend Analysis Section -->
-            <!-- <div id="trend-analysis-container" class="mb-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h3>Trend Analysis</h3>
-                    </div>
-                    <div class="card-body">
-                        <div id="trend-loading" class="loading" style="display: none;">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Loading...</span>
+                <!-- Q&A Section -->
+                <div id="qa-content" class="tab">
+                    <div class="qa-layout">
+                        <!-- Left Panel -->
+                        <div class="left-panel">
+                            <div class="chat-container">
+                                <h4 class="mt-4">Ask Questions</h4>
+                                <div class="chat-input mb-3">
+                                    <textarea class="form-control mb-2" id="user-question"
+                                        placeholder="Ask a question..."></textarea>
+                                    <button class="btn btn-primary" id="ask-question">Ask Question</button>
+                                </div>
+                                <div class="sample-questions">
+                                    <h5 class="mb-2">Sample Questions</h5>
+                                    <select class="form-select" id="sample-questions">
+                                        <option value="">Select a sample question</option>
+                                    </select>
+                                </div>
                             </div>
-                            <p>Generating trend analysis...</p>
                         </div>
-                        <div id="trend-content"></div>
-                        <div id="trend-table"></div>
-                    </div>
-                </div>
-            </div> -->
 
-            <!-- Q&A Section -->
-            <div class="card">
-                <div class="card-header">
-                    <h3>Questions & Answers</h3>
-                </div>
-                <div class="card-body">
-                    <div id="qa-container"></div>
-                    <div id="qa-loading" class="loading" style="display: none;">
-                        <div class="spinner-border text-primary" role="status">
-                            <span class="visually-hidden">Loading...</span>
+                        <!-- Center Panel -->
+                        <div class="center-panel">
+                            <div class="card" id="qa-section">
+                                <div class="card-header" style="text-align: center;">
+                                    <h3>Questions & Answers</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div id="qa-container"></div>
+                                    <div id="qa-loading" class="loading" style="display: none;">
+                                        <div class="spinner-border text-primary" role="status">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
+                                        <p>Generating answer...</p>
+                                    </div>
+                                    <button class="btn btn-secondary" id="download-qa">Download Q&A</button>
+                                </div>
+                            </div>
                         </div>
-                        <p>Generating answer...</p>
                     </div>
-                    <button class="btn btn-secondary" id="download-qa">Download Q&A</button>
                 </div>
             </div>
         </div>
@@ -358,6 +436,43 @@
             setLightTheme();
         });
 
+        //Handle Tab Switching
+        document.getElementById('upload-file-tab').addEventListener('click', function () {
+            hideAllTabs();
+            document.getElementById('upload-file-content').classList.add('active');
+        });
+
+        document.getElementById('generate-summary-tab').addEventListener('click', function () {
+            hideAllTabs();
+            document.getElementById('summary-container').style.display = 'block';
+            document.getElementById('generate-summary-content').classList.add('active');
+            document.getElementById('summary-container').classList.add('active');
+        });
+
+        document.getElementById('graph-tab').addEventListener('click', function () {
+            hideAllTabs();
+            document.getElementById('analysis-container').classList.add('active');
+        });
+
+        document.getElementById('sentiment-analysis-tab').addEventListener('click', function () {
+            hideAllTabs();
+            document.getElementById('sentiment-analysis-container').classList.add('active');
+        });
+
+        document.getElementById('qa-tab').addEventListener('click', function () {
+            hideAllTabs();
+            document.getElementById('qa-content').classList.add('active');
+            document.getElementById('qa-section').classList.add('active');
+        });
+
+        function hideAllTabs() {
+            document.getElementById('summary-container').style.display = 'none';
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+        }
+
         let uploadedFiles = [];
         let uploadedAudioFiles = [];
 
@@ -402,54 +517,6 @@
                 });
             });
         }
-
-        // async function downloadQA() {
-        //     const { jsPDF } = window.jspdf;
-        //     const doc = new jsPDF();
-
-        //     const qaContainer = document.getElementById('qa-container');
-        //     const qaItems = qaContainer.getElementsByClassName('question-answer');
-
-        //     let yPosition = 20;
-        //     const lineHeight = 7;
-        //     const margin = 20;
-        //     const pageWidth = doc.internal.pageSize.getWidth();
-        //     const pageHeight = doc.internal.pageSize.getHeight();
-
-        //     Array.from(qaItems).forEach((item, index) => {
-        //         const question = item.querySelector('.question').textContent;
-        //         const answer = item.querySelector('.answer').textContent;
-
-        //         // Calculate heights for question and answer
-        //         const questionLines = doc.splitTextToSize(question, pageWidth - 2 * margin);
-        //         const answerLines = doc.splitTextToSize(answer, pageWidth - 2 * margin);
-        //         const questionHeight = lineHeight * questionLines.length;
-        //         const answerHeight = lineHeight * answerLines.length;
-        //         const totalHeight = questionHeight + answerHeight + (2 * lineHeight); // Extra spacing
-
-        //         // Check if content will fit on current page
-        //         if (yPosition + totalHeight > pageHeight - margin) {
-        //             doc.addPage();
-        //             yPosition = 20;
-        //         }
-
-        //         // Add question with styling
-        //         doc.setFont('helvetica', 'bold');
-        //         doc.text('Q:', margin, yPosition);
-        //         doc.setFont('helvetica', 'normal');
-        //         doc.text(questionLines, margin + 10, yPosition);
-        //         yPosition += questionHeight + lineHeight;
-
-        //         // Add answer with styling
-        //         doc.setFont('helvetica', 'bold');
-        //         doc.text('A:', margin, yPosition);
-        //         doc.setFont('helvetica', 'normal');
-        //         doc.text(answerLines, margin + 10, yPosition);
-        //         yPosition += answerHeight + lineHeight;
-        //     });
-
-        //     doc.save('questions-and-answers.pdf');
-        // }
 
         async function downloadQA() {
             const { jsPDF } = window.jspdf;
@@ -651,18 +718,19 @@
 
                 const systemPrompt = `You are an AI assistant specialized in analyzing earnings call transcripts. 
     Please provide a comprehensive summary of all transcripts separetely.
-    Format your response markdown format with the following structure:
-    Company Name(Quarter, year)
+    Mention the points in the bullet points.
+    Format your response in markdown format with the following structure:
+    Company Name(Quarter, year) (This should be in bold with h2 heading)
 
-1. Financial Performance & Metrics:
+1. Financial Performance & Metrics(This heading should be in bold with h6 heading):
 -Key financial highlights (revenues, profits, margins, etc.)
 -Key financial ratios or performance indicators
 
-2. Business & Strategic Updates:
+2. Business & Strategic Updates(This heading should be in bold with h6 heading):
 -Important updates related to the company's operations, strategy, and growth
 -Any notable changes in business direction or new initiatives
 
-3. Capital Allocation:
+3. Capital Allocation(This heading should be in bold with h6 heading):
 -Details on capital expenditures (Capex)
 -Information on new investments, including strategic partnerships or acquisitions
 -Dividend policy and payouts
@@ -670,7 +738,7 @@
 -Mergers, acquisitions, or asset divestments
 -Stock buybacks or repurchases
 
-4. Key Concerns from Analysts & Management Responses:
+4. Key Concerns from Analysts & Management Responses(This heading should be in bold with h6 heading):
 -Key concerns or questions raised by analysts
 -A summary of how the management addressed or responded to those concerns
 Do not display anything else other than summary.`;
@@ -712,32 +780,6 @@ Do not display anything else other than summary.`;
                 summaryLoading.style.display = 'none';
             }
         }
-
-
-        // Add some CSS styles
-        const styles = `
-  .summary-text {
-    font-size: 1rem;
-    line-height: 1.6;
-    padding: 1rem;
-  }
-  .summary-text ul {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-    padding-left: 1.5rem;
-  }
-  .summary-text li {
-    margin-bottom: 0.5rem;
-  }
-  .summary-text p {
-    margin-bottom: 1rem;
-  }
-`;
-
-        // Add the styles to the document
-        const styleSheet = document.createElement("style");
-        styleSheet.innerText = styles;
-        document.head.appendChild(styleSheet);
 
         //Function to show original content
         function showOriginalContent() {
@@ -859,10 +901,15 @@ I want to generate the heatmap that visualizes investor concerns and management 
 The x-axis should represent key investor concerns.
 The y-axis should represent 'Investor Concern' and 'Management Confidence'.
 Give the values of x-axis along with the heatmap values for all values of x-axis and y-axis respectively in json.
+Also, give one sentence for each of key investor concerns highlighting the reasons for the scores for both investor concern and management confidence and also mention page number(s) from where it is considered.
+Also, give the overall sentiment score and give reason how it is calculated.
 Return the values in the following format -
 x: Array having all values of key investor concerns (eg - [A, B, C, D])
 ic_scores: Array having all Investor Concern scores (eg - [score of A, score of B, score of C, score of D])
 mc_scores: Array having all Management Confidence scores (eg - [score of A, score of B, score of C, score of D])
+reasons: Array having all values of reasons highlighted for scores of a particular key investor concerns (eg - [reason for scores of A, reason for scores of B, reason for scores of C, reason for scores of  D])
+overall_score: A value which is overall sentiment score.
+reason_score: One sentence which states out how overall sentiment score is calculated.
 Do not display any other text. Do not put any comment.`;
 
                 const response = await fetch("https://llmfoundry.straive.com/azure/openai/deployments/gpt-4o/chat/completions?api-version=2025-01-01-preview", {
@@ -954,13 +1001,47 @@ Do not display any other text. Do not put any comment.`;
                         },
                     },
                 });
-                describeContent.innerHTML += `<pre>
+                describeContent.innerHTML += `<br><pre>
                     Investor Concern:
                     Negative indicates topics where investors showed higher concern or skepticism.
                     Positive indicates lower investor concern.            
                     Management Confidence:
                     Positive shows topics where management expressed high confidence.
-                    Negative shows lower confidence or uncertainty in their responses.</pre>`;
+                    Negative shows lower confidence or uncertainty in their responses.</pre>
+                    <br>
+                    <br>`;
+
+                // Constructing the description content
+                let descriptionHTML = '';
+
+                // Loop through investor concerns and reasons
+                for (let i = 0; i < values.x.length; i++) {
+                    descriptionHTML += `<strong>${i + 1}. ${values.x[i]}</strong> - ${values.reasons[i]}<br>`;
+                }
+
+                // Overall Sentiment Score
+                const overallScore = values.overall_score;
+                const overallScoreColor = overallScore > 0 ? 'green' : 'red';
+                // descriptionHTML += `<div style="text-align: center;"><br><br><strong style="font-weight: normal; font-size: 24">Overall Sentiment Score : </strong><strong style="color: ${overallScoreColor}; font-weight: bold; font-size: 24">${overallScore}<br><br></div>`;
+
+                // // Reason for Overall Sentiment Score
+                // descriptionHTML += `<p><span style="font-weight: bold;">Reason for Overall Sentiment Score:</span> ${values.reason_score}</p><br>`;
+
+                descriptionHTML += `<br>
+  <div style="text-align: center; font-size: 36px;">
+    <strong style="font-weight: normal; font-size: 24px;">Overall Sentiment Score : </strong>
+    <strong style="color: ${overallScoreColor}; font-weight: bold; font-size: 24px;">${overallScore}</strong>
+  </div>
+<br>`;
+
+                // Reason for Overall Sentiment Score
+                descriptionHTML += `
+  <p style="color: black;">
+    <span style="font-weight: bold;">How Overall Sentiment Score is calculated : </span> ${values.reason_score}
+  </p><br>
+`;
+
+                describeContent.innerHTML += descriptionHTML;
             } catch (error) {
                 console.error('Error generating heatmap:', error);
                 analysisContent.innerHTML = `
@@ -1007,10 +1088,12 @@ ${audioText}`;
                 }
 
                 const systemPrompt = `You are an AI assistant specialized in sentiment analysis. 
-        Analyze the following earnings call transcripts and separate the statements into positive, neutral, and negative sentiments.
-        Make sure that the statements must not be any casual line or any instruction or anything else. These statements should have some facts and figures or higlight some crucial points.
+        Analyze the following earnings call transcripts and separate the statements into positive and negative sentiments.
+        Make sure that the statements must not be any casual line or any instruction or anything else.
+        These statements should have some facts and figures or higlight some crucial points.
+        Also provide the page number inside () from where it is taken.
         Return the 5 best statements for each category.
-        Format your response in JSON with three keys: "positive", "neutral", and "negative". 
+        Format your response in JSON with two keys: "positive" and "negative". 
         Each key should contain an array of statements.`;
 
                 const response = await fetch("https://llmfoundry.straive.com/azure/openai/deployments/gpt-4o/chat/completions?api-version=2025-01-01-preview", {
@@ -1035,51 +1118,91 @@ ${audioText}`;
                 sentiments = sentiments.replace(/^```json\s*/, '').replace(/\s*```$/, '');
                 sentiments = JSON.parse(sentiments);
 
-                // Create the HTML table
-                let sentimentTable = `
-        <table>
-            <thead>
-                <tr>
-                    <th>Positive Sentiments</th>
-                    <th>Neutral Sentiments</th>
-                    <th>Negative Sentiments</th>
-                </tr>
-            </thead>
-            <tbody>
+                // Create the HTML bullet points
+                let sentimentList = `
+            <div>
+                <h3>Positive Sentiments:</h3>
+                <ul style="color: green;">
         `;
 
-                const maxLength = Math.max(sentiments.positive.length, sentiments.neutral.length, sentiments.negative.length);
+                sentiments.positive.forEach(statement => {
+                    sentimentList += `<li>${statement}</li>`;
+                });
 
-                for (let i = 0; i < maxLength; i++) {
-                    sentimentTable += '<tr>';
-                    sentimentTable += `<td>${sentiments.positive[i] ? `<li>${sentiments.positive[i]}</li>` : ''}</td>`;
-                    sentimentTable += `<td>${sentiments.neutral[i] ? `<li>${sentiments.neutral[i]}</li>` : ''}</td>`;
-                    sentimentTable += `<td>${sentiments.negative[i] ? `<li>${sentiments.negative[i]}</li>` : ''}</td>`;
-                    sentimentTable += '</tr>';
-                }
-
-                sentimentTable += `
-            </tbody>
-        </table>
+                sentimentList += `
+                </ul>
+                <h3>Negative Sentiments:</h3>
+                <ul style="color: red;">
         `;
 
-                sentimentContent.innerHTML = `
-        <div class="sentiment-table">
-            ${sentimentTable}
-        </div>
+                sentiments.negative.forEach(statement => {
+                    sentimentList += `<li>${statement}</li>`;
+                });
+
+                sentimentList += `
+                </ul>
+            </div>
         `;
+
+                sentimentContent.innerHTML = sentimentList;
 
             } catch (error) {
                 console.error('Error analyzing sentiment:', error);
                 sentimentContent.innerHTML = `
-        <div class="alert alert-danger">
-            Error analyzing sentiment: ${error.message}. Please try again.
-        </div>
+            <div class="alert alert-danger">
+                Error analyzing sentiment: ${error.message}. Please try again.
+            </div>
         `;
             } finally {
                 sentimentLoading.style.display = 'none';
             }
         }
+
+        //         // Create the HTML table
+        //         let sentimentTable = `
+        // <table>
+        //     <thead>
+        //         <tr>
+        //             <th>Positive Sentiments</th>
+        //             <th>Neutral Sentiments</th>
+        //             <th>Negative Sentiments</th>
+        //         </tr>
+        //     </thead>
+        //     <tbody>
+        // `;
+
+        //         const maxLength = Math.max(sentiments.positive.length, sentiments.neutral.length, sentiments.negative.length);
+
+        //         for (let i = 0; i < maxLength; i++) {
+        //             sentimentTable += '<tr>';
+        //             sentimentTable += `<td>${sentiments.positive[i] ? `<li>${sentiments.positive[i]}</li>` : ''}</td>`;
+        //             sentimentTable += `<td>${sentiments.neutral[i] ? `<li>${sentiments.neutral[i]}</li>` : ''}</td>`;
+        //             sentimentTable += `<td>${sentiments.negative[i] ? `<li>${sentiments.negative[i]}</li>` : ''}</td>`;
+        //             sentimentTable += '</tr>';
+        //         }
+
+        //         sentimentTable += `
+        //     </tbody>
+        // </table>
+        // `;
+
+        //         sentimentContent.innerHTML = `
+        // <div class="sentiment-table">
+        //     ${sentimentTable}
+        // </div>
+        // `;
+
+        //     } catch (error) {
+        //         console.error('Error analyzing sentiment:', error);
+        //         sentimentContent.innerHTML = `
+        // <div class="alert alert-danger">
+        //     Error analyzing sentiment: ${error.message}. Please try again.
+        // </div>
+        // `;
+        //     } finally {
+        //         sentimentLoading.style.display = 'none';
+        //     }
+        // }
 
         //         async function generateTrendAnalysis() {
         //             const trendLoading = document.getElementById('trend-loading');
@@ -1379,6 +1502,7 @@ Please answer this question: ${question}`;
 
                 const systemPrompt = `You are an AI assistant specialized in analyzing earnings call transcripts.
 Analyze the provided transcripts and answer questions about financial performance, business strategy, and market trends.
+Mention the page numbers from where the information is taken.
 Base your answers only on the information provided in the transcripts.`;
 
                 const answer = await fetch("https://llmfoundry.straive.com/azure/openai/deployments/gpt-4o/chat/completions?api-version=2025-01-01-preview", {

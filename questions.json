@@ -1,12 +1,9 @@
 {
-    "Financial Performance And Strategy": [
-        "What were the key financial highlights from the last earnings call?",
-        "What are the company’s key capital allocation priorities (CapEx, dividends, debt reduction)?"
-    ],
-    "Investor Sentiment And Concerns": [
-        "What were the major investor concerns in the last five earnings calls?",
-        "How has management’s tone changed over the last year?",
-        "What are the key questions analysts repeatedly ask in earnings calls?",
-        "How has investor sentiment on debt management evolved?"
+    "Questions": [
+        "What were the top three concerns raised by the analysts during the call?",
+        "What are the major capital allocation priorities mentioned?",
+        "What regulatory challenges or approvals were discussed in the call?",
+        "Were there any updates on share buybacks or capital returns to shareholders?",
+        "Was there any update on the company’s leverage or debt position?"
     ]
 }

@@ -1,348 +1,295 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Competitor's Insights</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
-    crossorigin="anonymous" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet"
-    crossorigin="anonymous" />
+  <meta charset="utf-8">
+  <title>AI Assistant</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <link rel="icon" href="https://raw.githubusercontent.com/gramener/assets/main/straive-favicon.svg">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    crossorigin="anonymous">
   <style>
-    /* Existing styles */
-    .loading {
+    /* Basic layout & styling */
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      border-bottom: 1px solid orangered;
+    }
+
+    /* Hide main container until “Start Chat” */
+    .main-container {
       display: none;
+      flex-direction: row;
+      height: calc(100vh);
+      /* Subtract navbar + footer */
+      overflow: hidden;
     }
 
-    .loading.active {
-      display: block;
+    /* Sidebar */
+    #sidebar {
+      width: 250px;
+      background-color: #2a3135;
+      color: white;
+      border-right: 1px solid #ddd;
+      padding: 1rem;
     }
 
-    .file-list {
-      max-height: 300px;
+    #documentList {
+      max-height: 500px;
+    }
+
+    .doc-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      word-wrap: break-word;
+    }
+
+    /* Chat area */
+    .chat-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      background-color: #f8f9fa;
       overflow-y: auto;
     }
 
-    .table {
-      border-collapse: collapse;
-      width: 100%;
+    /* Larger chat history width */
+    #history {
+      width: 90%;
+      margin-top: 1rem;
+      flex: 1;
+      overflow-y: auto;
+      padding: 5px 50px;
     }
 
-    .table th,
-    .table td {
-      border: 1px solid #ccc;
-      padding: 8px;
-      text-align: left;
-    }
-
-    .table th {
-      background-color: #f2f2f2;
-    }
-
-    /* New sidebar styles */
-    .sidebar {
-      height: 100vh;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 250px;
-      background-color: #2a3135;
-      /* Blue shade */
-      padding: 20px;
-    }
-
-    .sidebar h2 {
-      color: white;
-      margin-bottom: 30px;
-      /* Increased margin for separation */
-    }
-
-    .sidebar .btn {
-      display: block;
-      width: 100%;
-      padding: 10px;
-      color: white;
-      text-decoration: none;
-      border-radius: 5px;
-      margin-bottom: 15px;
-      /* Increased margin for button separation */
-      text-align: left;
-    }
-
-    .sidebar .btn:hover {
-      background-color: darkgrey;
-      /* Darker blue on hover */
-    }
-
-    .content {
-      margin-left: 260px;
-      /* Adjust for sidebar width */
-      padding: 20px;
-    }
-
-    .tab-content {
-      border: 1px solid #dee2e6;
-      border-radius: 5px;
-      padding: 20px;
-      height: 100%;
-    }
-
-    .tab {
+    #role-input,
+    #text {
+      width: 80%;
       display: none;
+      /* Shown after Start Chat */
     }
 
-    .tab.active {
+    .user-text {
+      text-align: right;
+    }
+
+    .system-text {
+      text-align: left;
+    }
+
+    .user-text,
+    .system-text {
+      padding: 1px;
+      margin: 4px 0;
+      background-color: whitesmoke;
+      border-radius: 10pt;
+    }
+
+    /* Suggested Questions */
+    #suggestedQuestions {
+      width: 70%;
+      margin-bottom: 1rem;
+    }
+
+    /* Loader */
+    #progress {
+      visibility: hidden;
+    }
+
+    .loader {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
       display: block;
+      margin: 15px auto;
+      position: relative;
+      color: #FFF;
+      left: -100px;
+      box-sizing: border-box;
+      animation: shadowRolling 2s linear infinite;
+    }
+
+    @keyframes shadowRolling {
+      0% {
+        box-shadow: 0 0 orangered, 0 0 orangered, 0 0 orangered, 0 0 orangered;
+      }
+
+      12% {
+        box-shadow: 100px 0 blueviolet, 0 0 orangered, 0 0 orangered, 0 0 orangered;
+      }
+
+      25% {
+        box-shadow: 110px 0 blueviolet, 100px 0 blueviolet, 0 0 orangered, 0 0 orangered;
+      }
+
+      36% {
+        box-shadow: 120px 0 blueviolet, 110px 0 blueviolet, 100px 0 blueviolet, 0 0 orangered;
+      }
+
+      50% {
+        box-shadow: 130px 0 blueviolet, 120px 0 blueviolet, 110px 0 blueviolet, 100px 0 blueviolet;
+      }
+
+      62% {
+        box-shadow: 200px 0 orangered, 130px 0 blueviolet, 120px 0 blueviolet, 110px 0 blueviolet;
+      }
+
+      75% {
+        box-shadow: 200px 0 orangered, 200px 0 orangered, 130px 0 blueviolet, 120px 0 blueviolet;
+      }
+
+      87% {
+        box-shadow: 200px 0 orangered, 200px 0 orangered, 200px 0 orangered, 130px 0 blueviolet;
+      }
+
+      100% {
+        box-shadow: 200px 0 orangered, 200px 0 orangered, 200px 0 orangered, 200px 0 orangered;
+      }
+    }
+
+    /* Start screen */
+    #startScreen {
+      text-align: center;
+      padding: 3rem 1rem;
+      max-width: 40rem;
+    }
+
+    .flex-row-center {
+      display: flex;
+      flex-direction: row;
+      width: auto;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #sampleQuestionsButton {
+      display: block;
+      margin: 0 auto;
     }
   </style>
 </head>
 
-<body class="bg-light">
-  <div class="sidebar">
-    <h2>Competitor's Insights</h2>
-    <button class="btn" id="showSummary">Comparison Summary</button>
-    <button class="btn" id="showSentiment">Sentiment Analysis</button>
-    <button class="btn" id="showChatbot">Chatbot</button>
-    <button class="btn" id="showKeywordSearch">Keyword Search</button>
-  </div>
+<body>
 
-  <div class="content">
-
-    <div class="tab-content">
-      <div id="summaryTab" class="tab active">
-        <div class="row">
-          <div class="col-md-6">
-            <select class="form-select" id="clientCompany">
-              <option value="">Select Client Company</option>
-              <option value="Enbridge">Enbridge</option>
-              <option value="Pembina">Pembina</option>
-              <option value="TC Energy">TC Energy</option>
-            </select>
-          </div>
-          <div class="col-md-6">
-            <select class="form-select" id="competitorCompany">
-              <option value="">Select Competitor Company</option>
-              <option value="Enbridge">Enbridge</option>
-              <option value="Pembina">Pembina</option>
-              <option value="TC Energy">TC Energy</option>
-            </select>
-          </div>
-        </div>
-        <br>
-        <div class="card mb-4">
-          <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Summary</h5>
-            <button class="btn btn-primary" id="generateSummary">
-              <i class="bi bi-magic"></i> Generate Summary
-            </button>
-          </div>
-          <div class="card-body">
-            <div class="loading" id="summaryLoading">
-              <div class="spinner-border text-primary" role="status"></div>
-              Generating summary...
-            </div>
-            <div id="summaryContent"></div>
-          </div>
-        </div>
-      </div>
-
-      <div id="sentimentTab" class="tab">
-        <div class="card mb-4">
-          <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Sentiment Analysis of all 3 Companies for Last Quarter</h5>
-            <button class="btn btn-primary" id="analyzeSentiment">
-              <i class="bi bi-emoji-smile"></i> Analyze Sentiment
-            </button>
-          </div>
-          <div class="card-body">
-            <div class="loading" id="sentimentLoading">
-              <div class="spinner-border text-primary" role="status"></div>
-              Analyzing sentiments...
-            </div>
-            <div id="sentimentContent"></div>
-          </div>
-        </div>
-      </div>
-
-      <div id="chatbotTab" class="tab">
-        <div class="card">
-          <div class="card-header">
-            <h5 class="mb-0">Chatbot</h5><br>
-          </div>
-          <div class="card-body">
-            <div class="mb-3">
-              <textarea class="form-control" id="questionInput" rows="3"
-                placeholder="Ask a question about the companies..."></textarea>
-            </div>
-            <div class="mb-3">
-              <label for="clientFilter2">Filter by Client:</label>
-              <select id="clientFilter2">
-                <option value="">All</option>
-                <option value="Enbridge">Enbridge</option>
-                <option value="TC Energy">TC Energy</option>
-                <option value="Pembina">Pembina</option>
-              </select>
-
-              <label for="competitorFilter2">Filter by Competitor:</label>
-              <select id="competitorFilter2">
-                <option value="">All</option>
-                <option value="Enbridge">Enbridge</option>
-                <option value="TC Energy">TC Energy</option>
-                <option value="Pembina">Pembina</option>
-              </select>
-
-              <label for="filenameFilterQA">Filter by Filename:</label>
-              <select id="filenameFilterQA">
-                <option value="">All</option>
-                <option value="Annual_Report">Annual Report</option>
-                <option value="Investor_Day">Investor Day</option>
-                <option value="Q4_Earnings_Call_23">Q4 Earning Call 23</option>
-                <option value="Q1_Earnings_Call_24">Q1 Earning Call 24</option>
-                <option value="Q2_Earnings_Call_24">Q2 Earning Call 24</option>
-                <option value="Q3_Earnings_Call_24">Q3 Earning Call 24</option>
-                <option value="Q4_Earnings_Call_24">Q4 Earning Call 24</option>
-                <option value="Financial_Cash_Flow">Cash Flow Financial</option>
-                <option value="Financial_Balance_Sheet">Balance Sheet Financial</option>
-                <option value="Financial_Income_Statement">Income Statement Financial</option>
-              </select>
-            </div>
-            <button class="btn btn-primary mb-3" id="askQuestion">
-              <i class="bi bi-chat-dots"></i> Get Answer
-            </button>
-            <div class="loading" id="qaLoading">
-              <div class="spinner-border text-primary" role="status"></div>
-              Generating answer...
-            </div>
-            <div id="qaContent"></div>
-          </div>
-        </div>
-      </div>
-
-      <div id="keywordSearchTab" class="tab">
-        <h5 class="mt-4">Keyword Search for Company Analysis</h5>
-        <div class="mb-3">
-          <input type="text" class="form-control" id="keywordInput"
-            placeholder="Enter keyword (e.g., capex, emissions, LNG)">
-          <br>
-          <div>
-            <label for="companyFilter">Filter by Company:</label>
-            <select id="companyFilter">
-              <option value="">All</option>
-              <option value="Enbridge">Enbridge</option>
-              <option value="TC Energy">TC Energy</option>
-              <option value="Pembina">Pembina</option>
-            </select>
-
-            <label for="filenameFilter">Filter by Filename:</label>
-            <select id="filenameFilter">
-              <option value="">All</option>
-              <option value="Annual_Report">Annual Report</option>
-              <option value="Investor_Day">Investor Day</option>
-              <option value="Q4_Earnings_Call_23">Q4 Earning Call 23</option>
-              <option value="Q1_Earnings_Call_24">Q1 Earning Call 24</option>
-              <option value="Q2_Earnings_Call_24">Q2 Earning Call 24</option>
-              <option value="Q3_Earnings_Call_24">Q3 Earning Call 24</option>
-              <option value="Q4_Earnings_Call_24">Q4 Earning Call 24</option>
-            </select>
-          </div>
-          <br>
-          <button class="btn btn-secondary mb-3" id="searchKeyword">
-            <i class="bi bi-search"></i> Search
-          </button>
-        </div>
-        <div id="keywordResults"></div>
-      </div>
+  <!-- Start Screen -->
+  <div class="flex-row-center">
+    <div id="startScreen">
+      <h2>IR AI Assistant</h2>
+      <p>
+        Streamline your document analysis with IR AI Assistant. Rather than sifting through
+        lengthy PDFs one by one, our application allows you to
+        interact with the files directly, saving valuable time and effort.
+      </p>
+      <button id="startChat" class="btn btn-outline-secondary mt-3" type="button">
+        Start Chat
+      </button>
     </div>
   </div>
 
-  <script type="module">
-    // JavaScript for tab navigation
-    document.getElementById('showSummary').addEventListener('click', function () {
-      setActiveTab('summaryTab');
-    });
+  <!-- Main Container: Sidebar + Chat (hidden by default) -->
+  <main id="mainContainer" class="main-container">
+    <!-- Sidebar -->
+    <aside id="sidebar">
+      <h5>Select Company</h5>
+      <select id="companySelect" class="form-select mb-3">
+        <option value="">Select a company</option>
+      </select>
 
-    document.getElementById('showSentiment').addEventListener('click', function () {
-      setActiveTab('sentimentTab');
-    });
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h6 class="m-0">Files</h6>
+      </div>
+      <div id="documentList"></div>
+    </aside>
 
-    document.getElementById('showChatbot').addEventListener('click', function () {
-      setActiveTab('chatbotTab');
-    });
+    <!-- Chat Area -->
+    <div class="chat-area">
+      <!-- Role Input (shown after start chat) -->
+      <div id="role-input">
+        <div class="input-group mt-3 mb-3">
+          <h5>User Prompt - &nbsp;&nbsp;</h5>
+          <!-- <input type="text" id="roleText" class="form-control" value='Enter prompt here' placeholder="Role" /> -->
+          <textarea id="roleText" class="form-control" rows="3" placeholder="Role">You are a document assistant that helps the Investor Relations team to find the information in a context.
+Provide the accurate response based only on the context and inputs.
+Provide the answer in form of paragraphs and bullet points.
+Please cite facts and numbers provided by the management teams wherever applicable.
+Please give more weightage to the recent documents as you draft the answers.
+Please cite relevant documents reference for the different parts of the answers.</textarea>
+        </div>
+      </div>
 
-    document.getElementById('showKeywordSearch').addEventListener('click', function () {
-      setActiveTab('keywordSearchTab');
-    });
+      <!-- Question Input (shown after start chat) -->
+      <div id="text">
+        <div class="input-group mt-2 mb-2">
+          <input type="text" id="chatText" class="form-control" placeholder="Ask your question about the PDFs">
+          <button class="btn btn-outline-primary" type="button" id="chatButton" title="Send">
+            Ask
+          </button>
+        </div>
+        <!-- New Button for Sample Questions -->
+        <button id="sampleQuestionsButton" class="btn btn-success mb-3" type="button">
+          Select from Sample Questions
+        </button>
+      </div>
 
-    function setActiveTab(tabId) {
-      const tabs = document.querySelectorAll('.tab');
-      tabs.forEach(tab => {
-        tab.classList.remove('active');
-      });
-      document.getElementById(tabId).classList.add('active');
-    }
+      <!-- Suggested Questions (clickable links) -->
+      <div id="suggestedQuestions"></div>
 
-    let chart = null;
+      <!-- Chat History (answer box is bigger now) -->
+      <div id="history"></div>
 
-    // Company data
-    const companyData = {
-      'TC Energy': {
-        data: [0.35, 0.05, 0.30, 0.75, 0.25],
-        labels: ['Q4 2023', 'Q1 2024', 'Q2 2024', 'Q3 2024', 'Q4 2024']
-      },
-      'Enbridge': {
-        data: [0.9, 0.8, 0.8, 0.85, 0.9],
-        labels: ['Q4 2023', 'Q1 2024', 'Q2 2024', 'Q3 2024', 'Q4 2024']
-      },
-      'Pembina': {
-        data: [0.7, 0.75, 0.7, 0.65, 0.8],
-        labels: ['Q4 2023', 'Q1 2024', 'Q2 2024', 'Q3 2024', 'Q4 2024']
-      }
-    };
+      <!-- Loader -->
+      <div id="progress" class="align-self-center"></div>
+    </div>
+  </main>
 
-    // file structure
-    // const files = {
-    //     'Enbridge': {
-    //         Annual_Report: ``,
-    //         Q4_Earnings_Call_23: ``,
-    //         Q1_Earnings_Call_24: ``,
-    //         Q2_Earnings_Call_24: ``,
-    //         Q3_Earnings_Call_24: ``,
-    //         Q4_Earnings_Call_24: ``,
-    //         Investor_Day: ``,
-    //         Financial_Cash_Flow: ``,
-    //         Financial_Balance_Sheet: ``,
-    //         Financial_Income_Statement: ``
-    //     },
-    //     'Pembina': {
-    //         Annual_Report: ``,
-    //         Q4_Earnings_Call_23: ``,
-    //         Q1_Earnings_Call_24: ``,
-    //         Q2_Earnings_Call_24: ``,
-    //         Q3_Earnings_Call_24: ``,
-    //         Q4_Earnings_Call_24: ``,
-    //         Investor_Day: ``,
-    //         Financial_Cash_Flow: ``,
-    //         Financial_Balance_Sheet: ``,
-    //         Financial_Income_Statement: ``
-    //     },
-    //     'TC Energy': {
-    //         Annual_Report: ``,
-    //         Q4_Earnings_Call_23: ``,
-    //         Q1_Earnings_Call_24: ``,
-    //         Q2_Earnings_Call_24: ``,
-    //         Q3_Earnings_Call_24: ``,
-    //         Q4_Earnings_Call_24: ``,
-    //         Investor_Day: ``,
-    //         Financial_Cash_Flow: ``,
-    //         Financial_Balance_Sheet: ``,
-    //         Financial_Income_Statement: ``
-    //     }
-    // };
 
+  <!-- Bootstrap + Showdown JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" crossorigin="anonymous"></script>
+
+  <!-- Dark Theme Toggle (from @gramex/ui) -->
+  <!-- <script src="https://cdn.jsdelivr.net/npm/@gramex/ui@0.3/dist/dark-theme.js" type="module"></script> -->
+
+
+  <script src="https://cdn.jsdelivr.net/npm/showdown@2.1.0/dist/showdown.min.js"></script>
+
+  <!-- Main Script -->
+  <script>
+    // Start/Hide Elements
+    const startScreen = document.getElementById('startScreen');
+    const startChat = document.getElementById('startChat');
+    const mainContainer = document.getElementById('mainContainer');
+
+    // Chat elements
+    const historyDiv = document.getElementById('history');
+    const textDiv = document.getElementById('text');
+    const roleInput = document.getElementById('role-input');
+    const chatText = document.getElementById('chatText');
+    const chatButton = document.getElementById('chatButton');
+    const roleText = document.getElementById('roleText');
+    const progressDiv = document.getElementById('progress');
+
+    // Sidebar elements
+    const fileInput = document.getElementById('fileInput');
+    const fileChosenLabel = document.getElementById('fileChosenLabel');
+    const uploadBtn = document.getElementById('uploadBtn');
+    //const documentList = document.getElementById('documentList');
+    const toggleAllBtn = document.getElementById('toggleAllBtn');
+
+    // Container for suggested questions
+    const suggestedDiv = document.getElementById('suggestedQuestions');
 
     const files = {
       'Enbridge': {
@@ -11171,593 +11118,337 @@ Unknown Analyst Just revisiting the ethane strategy here. Just want to talk abou
       },
     };
 
-    document.getElementById('generateSummary').addEventListener('click', async () => {
-      const client = document.getElementById('clientCompany').value;
-      const competitor = document.getElementById('competitorCompany').value;
+    // Populate the company dropdown
+    const companySelect = document.getElementById('companySelect');
+    const documentList = document.getElementById('documentList');
 
-      if (!client || !competitor) {
-        alert('Please select both companies');
-        return;
-      }
+    // This will hold the document information
+    let documents = [];
 
-      document.getElementById('summaryLoading').classList.add('active');
-      document.getElementById('summaryContent').innerHTML = '';
-
-      try {
-        // Get all file contents for both companies
-        const clientFiles = files[client] || {};
-        const competitorFiles = files[competitor] || {};
-
-        // Create context string from files
-        const createContextString = (companyFiles) => {
-          return Object.entries(companyFiles)
-            .map(([filename, content]) => `${filename}:\n${content}`)
-            .join('\n\n');
-        };
-
-        const clientContext = createContextString(clientFiles);
-        const competitorContext = createContextString(competitorFiles);
-
-        const systemPrompt = `Generate a comparative summary between the selected companies based on their earnings calls, annual reports and investor day. Use only the information provided in the context. 
-                Provide only the summary, do not provide any other text. 
-                Mention the citations, filenames(Annual_Report, Q4_Earnings_Call_23, Q1_Earnings_Call_24, Q2_Earnings_Call_24, Q3_Earnings_Call_24, Q4_Earnings_Call_24, Investor_Day) from where the following information is taken. For one particular info, do not show more than two citations.
-                Mention the page number as well.`;
-
-        const userPrompt = `Here are the documents for ${client}:\n\n${clientContext}\n\n
-                Here are the documents for ${competitor}:\n\n${competitorContext}\n\n
-                Based on these documents, please provide a detailed comparative analysis between ${client} and ${competitor}, 
-                focusing on their recent performance, financial metrics, strategic initiatives, and future outlook. 
-                Structure the comparison in clear sections and highlight key differences and similarities.`;
-
-        const response = await fetch("https://llmfoundry.straive.com/gemini/v1beta/openai/chat/completions", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify({
-            model: "gemini-2.0-flash",
-            messages: [
-              {
-                role: "system",
-                content: systemPrompt
-              },
-              {
-                role: "user",
-                content: userPrompt
-              }
-            ],
-          }),
-        });
-
-        const data = await response.json();
-        const summary = data.choices?.[0]?.message?.content || 'Failed to generate summary';
-        document.getElementById('summaryContent').innerHTML = marked.parse(summary);
-      } catch (error) {
-        document.getElementById('summaryContent').innerHTML =
-          `<div class="alert alert-danger">Error generating summary: ${error.message}</div>`;
-      }
-
-      document.getElementById('summaryLoading').classList.remove('active');
+    Object.keys(files).forEach(company => {
+      const option = document.createElement('option');
+      option.value = company;
+      option.textContent = company;
+      companySelect.appendChild(option);
     });
 
-    // Compare Sentiments
-    // document.getElementById('compareSentiments').addEventListener('click', () => {
-    //     if (chart) {
-    //         chart.destroy();
-    //     }
-
-    //     const ctx = document.getElementById('sentimentChart').getContext('2d');
-    //     chart = new Chart(ctx, {
-    //         type: 'line',
-    //         data: {
-    //             labels: companyData['TC Energy'].labels,
-    //             datasets: [
-    //                 {
-    //                     label: 'TC Energy',
-    //                     data: companyData['TC Energy'].data,
-    //                     borderColor: 'rgb(255, 99, 132)',
-    //                     tension: 0.1
-    //                 },
-    //                 {
-    //                     label: 'Enbridge',
-    //                     data: companyData['Enbridge'].data,
-    //                     borderColor: 'rgb(54, 162, 235)',
-    //                     tension: 0.1
-    //                 },
-    //                 {
-    //                     label: 'Pembina',
-    //                     data: companyData['Pembina'].data,
-    //                     borderColor: 'rgb(75, 192, 192)',
-    //                     tension: 0.1
-    //                 }
-    //             ]
-    //         },
-    //         options: {
-    //             responsive: true,
-    //             plugins: {
-    //                 title: {
-    //                     display: true,
-    //                     text: 'Sentiment comparison over last 5 earnings calls'
-    //                 }
-    //             },
-    //             scales: {
-    //                 y: {
-    //                     title: {
-    //                         display: true,
-    //                         text: 'Sentiment Score (Polarity)'
-    //                     }
-    //                 },
-    //                 x: {
-    //                     title: {
-    //                         display: true,
-    //                         text: 'Earnings Call Quarter'
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     });
-    // });
-
-    document.getElementById('analyzeSentiment').addEventListener('click', async () => {
-      const companies = ['Enbridge', 'TC Energy', 'Pembina'];
-      const targetFileName = 'Q4_Earnings_Call_24';
-
-      document.getElementById('sentimentLoading').classList.add('active');
-      document.getElementById('sentimentContent').innerHTML = '';
-
-      try {
-        // // Get content for each company's Q4 earnings call
-        // const companiesContent = companies.map(company => ({
-        //   name: company,
-        //   content: files[company][targetFileName] || ''
-        // }));
-
-        // // Prepare messages for LLM
-        // const messages = [
-        //   {
-        //     role: "system",
-        //     content: `Analyze the sentiment in the Q4 earnings calls for all companies. For each company, provide three best positive, neutral, and negative sentiment each. Do not provide any other text.
-        //     Make sure that the statements must not be any casual line or any instruction or anything else. These statements should have some facts and figures or higlight some crucial points.`
-        //   },
-        //   {
-        //     role: "user",
-        //     content: "Analyze sentiment for the following companies' Q4 earnings calls. For each company, provide the sentiment breakdown in the format:\n" +
-        //       "Company Name:\n" +
-        //       "Positive sentiment: Statement1; Statement2; Statement3\n" +
-        //       "Neutral sentiment: Statement1; Statement2; Statement3\n" +
-        //       "Negative sentiment: Statement1; Statement2; Statement3"
-        //   }
-        // ];
-
-        // // Add each company's content as separate message
-        // companiesContent.forEach(company => {
-        //   messages.push({
-        //     role: "user",
-        //     content: `${company.name} earnings call content:\n${company.content}`
-        //   });
-        // });
-
-        // const response = await fetch("https://llmfoundry.straive.com/azure/openai/deployments/gpt-4o/chat/completions?api-version=2025-01-01-preview", {
-        //   method: "POST",
-        //   headers: { "Content-Type": "application/json" },
-        //   credentials: "include",
-        //   body: JSON.stringify({ messages })
-        // });
-
-        // const data = await response.json();
-        // const analysis = data.choices?.[0]?.message?.content || 'Failed to analyze sentiment';
-        // console.log(analysis)
-
-        const sentiments = {
-          "Enbridge": {
-            "positive": {
-              "A": "We delivered record EBITDA and DCF per share in 2024, with new assets and continued customer demand contributing to a 13% increase in EBITDA over 2023.",
-              "B": "In December, we increased our dividend for the 30th consecutive year, extending our status as one of the only dividend aristocrats in our sector.",
-              "C": "Across the business, we added over $8 billion of organic projects to our backlog, diversified across all four of our franchises."
-            },
-            // "neutral": {
-            //   "A": "2024 marks Enbridge's 19th consecutive year of achieving guidance, underscoring the stability of our business despite the myriad of macroeconomic challenges we've seen these past two decades.",
-            //   "B": "Our utility franchise has approximately doubled in size this year, having brought Enbridge Gas, Ohio, Utah, Idaho, Wyoming, and North Carolina in-house.",
-            //   "C": "I'm also reaffirming our mid-term outlook and look forward to discussing this with the investment community in a few weeks at our upcoming Investor Day."
-            // },
-            "negative": {
-              "A": "In Europe, we placed Fecamp and Provence Grand Large into service in 2024. Both those facilities are supported by long-term PPAs with EDF. Manufacturing is largely completed for Calvados and the drilling campaign is underway. We now expect the project to enter service in 2027, which is later than our original schedule.",
-              "B": "Although early, so far, the mainline has been in apportionment all year. We've experienced colder weather in Ontario and the current strength of the U.S. dollar could be tailwinds if experienced for the entire year. These can be partially offset by a slower-than-expected decline in U.S. interest rates.",
-              "C": "Earlier this year, we sanctioned the Orange Grove solar project, which will generate 130 megawatts of power under long-term agreements with AT&T and support the growing electric generation needs of the ERCOT market. We also sanctioned the Sequoia Solar project in Texas."
-            }
-          },
-          "TC Energy": {
-            "positive": {
-              "A": "Bruce Power achieved exceptional performance with 99% availability which drove a 28% increase in quarterly EBITDA growth for our Power and Energy Solutions business unit.",
-              "B": "I am pleased to share that our Board of Directors has declared a first quarter 2025 dividend of $0.85 per common share, which is equivalent to $3.40 per share on an annualized basis. This represents our 25th consecutive year of dividend growth to our shareholders.",
-              "C": "We've delivered a 0.6x reduction in debt-to-EBITDA through asset divestitures, cost optimizations, revenue enhancements, and reductions in actual capital expenditures."
-            },
-            // "neutral": {
-            //   "A": "Our team's outstanding safety and operational performance play a critical role in TC's continued strong financial results.",
-            //   "B": "We are actively involved in several key projects, including not only Bruce Power's MCR program but potential future expansion at Bruce C and the Ontario Pumped Storage Project.",
-            //   "C": "Longer-term and on an unhedged basis, a $0.01 change in USD/CAD rates corresponds to roughly a $0.01 change in comparable EPS."
-            // },
-            "negative": {
-              "A": "Interest expense was higher in the quarter, primarily due to lower capitalized interest as assets were placed into service, increased levels of short-term borrowing, and the timing of our liability management program. These factors resulted in $1.1 billion in comparable earnings, 8% lower than the fourth quarter of 2023.",
-              "B": "Given the limited amount of storage capacity across Mexico and to provide some level of utility upon in-service, we've been discussing potential solutions to use the completed SGP pipeline for temporary services, highlighting challenges on timing and connectivity in Mexico.",
-              "C": "Maintaining a long-term upper limit of 4.75x debt-to-EBITDA, TC made significant progress towards balance sheet strengthening, but FX rate differentials impacted the year-end ratio, showing close margins on financial limits."
-            }
-          },
-          "Pembina": {
-            "positive": {
-              "A": "We also delivered 2024 full-year earnings of $1.874 billion, record annual adjusted EBITDA of $4.408 billion, and record full-year adjusted cash flow from operating activities of $3.265 billion.",
-              "B": "Pembina has secured the sole extraction rights from the Yellowhead Mainline, a 1 billion cubic feet per day natural gas delivery pipeline.",
-              "C": "Pembina has entered into agreements for a 50% interest in the Greenlight Electricity Center, which is developing a gas-fired combined cycle power generation facility in Alberta's Industrial Heartland."
-            },
-            // "neutral": {
-            //   "A": "Pembina generated meaningful free cash flow, which is allocated to strengthening the balance sheet and returning capital to shareholders by increasing the common share dividend by 3.4%.",
-            //   "B": "We estimate we could build probably something in the neighborhood of maybe 500 million a day of extraction capacity, resulting in approximately 25,000 barrels of NGL extraction.",
-            //   "C": "Pembina's projects are going to be required, but there's probably other third-party projects that are going to be required and that we're supportive of taking place because the industry is going to require it."
-            // },
-            "negative": {
-              "A": "Earnings in the fourth quarter were $572 million, representing an 18% decrease over the same period in the prior year due to unrealized losses on commodity-related derivatives and higher interest expense.",
-              "B": "Lower net revenue on the Cochin Pipeline, largely due to lower front holds and lower interruptible volumes during the period.",
-              "C": "The seasonal strip in the IT component and ongoing rate cases with shippers on the Alliance pipeline indicate some contractual challenges ahead."
-            }
-          }
-        }
-
-        // Create table element
-        const table = document.createElement('table');
-        table.className = 'table';
-
-        // Create table header
-        const thead = document.createElement('thead');
-        const headerRow = document.createElement('tr');
-        // ['Company', 'Positive Sentiments', 'Neutral Sentiments', 'Negative Sentiments'].forEach(headerText => {
-        ['Company', 'Positive Sentiments', 'Negative Sentiments'].forEach(headerText => {
-          const th = document.createElement('th');
-          th.textContent = headerText;
-          headerRow.appendChild(th);
-        });
-        thead.appendChild(headerRow);
-        table.appendChild(thead);
-
-        // Create table body
-        const tBody = document.createElement('tbody');
-
-        for (const company in sentiments) {
-          const positive = Object.values(sentiments[company].positive);
-          //const neutral = Object.values(sentiments[company].neutral);
-          const negative = Object.values(sentiments[company].negative);
-
-          //const maxRows = Math.max(positive.length, neutral.length, negative.length);
-          const maxRows = Math.max(positive.length, negative.length);
-
-          for (let i = 0; i < 3; i++) {
-            const row = document.createElement('tr');
-            if (i === 0) {
-              const companyCell = document.createElement('td');
-              companyCell.rowSpan = maxRows;
-              companyCell.textContent = company;
-              row.appendChild(companyCell);
-            }
-            const positiveCell = document.createElement('td');
-            positiveCell.textContent = positive[i] || '';
-            row.appendChild(positiveCell);
-
-            // const neutralCell = document.createElement('td');
-            // neutralCell.textContent = neutral[i] || '';
-            // row.appendChild(neutralCell);
-
-            const negativeCell = document.createElement('td');
-            negativeCell.textContent = negative[i] || '';
-            row.appendChild(negativeCell);
-
-            tBody.appendChild(row);
-          }
-        }
-        table.appendChild(tBody);
-
-        // Append the table to the document body or a specific container
-        document.body.appendChild(table);
-
-        // Add the companies' content
-        const fin_metrics = {
-          "Enbridge": {
-            "stock": "Record earnings, consistent dividend increases, successful acquisitions, strategic asset sales, continued growth and stability.",
-            "capex": "Organic projects backlog increased by over $8 billion, with $5 billion of gas and renewable projects added in 2024.",
-            "merger": "Closed acquisition of 3 premier U.S. natural gas utilities and announced 3 tuck-in acquisitions of Permian and Gulf Coast assets. Sold interest in Alliance and Aux Sable and East to West Tie Line for approximately $3.2 billion.",
-            "debt": "Maintaining a long-held leverage target of 4.5 to 5x; expect contributions from acquired and in-service assets to benefit metrics through 2025."
-          },
-          "TC Energy": {
-            "stock": "Declared Q1 2025 dividend of $0.85 per share, a 3.3% increase from previous quarter.",
-            "capex": "Net CapEx limit of $6 billion to $7 billion through 2025, with plans to add $8 billion in projects between 2026 and 2030. Placed $7 billion of assets into service in 2024 with $1.3 billion more capital reductions by 2027.",
-            "merger": "Completed spin-off of Liquids business; partnership with CFE on Southeast Gateway.",
-            "debt": "Achieved a reduction in debt-to-EBITDA by 0.6x since 2022. Current leverage is near the long-term target of 4.75x debt-to-EBITDA."
-          },
-          "Pembina": {
-            "stock": "Increased common share dividend by 3.4% due to strong cash flow and financial results.",
-            "capex": "Capital investment required for Dow supply agreement reduced to less than $300 million. Approximately $4 billion secured projects under construction and over $4 billion additional projects in development.",
-            "merger": "Fully consolidated ownership of Alliance and Aux Sable. Acquired rights for NGL extraction from the Yellowhead Mainline.",
-            "debt": "Maintains a debt-to-adjusted EBITDA ratio of 3.5x, at the low end of their targeted range reflecting a strong balance sheet and a BBB credit rating."
-          }
-        }
-        let companyMetrics = fin_metrics;
-
-        // Create the second table
-        const table2 = document.createElement('table');
-        table2.className = 'table mt-4';
-
-        // Create table header
-        const thead2 = document.createElement('thead');
-        const headerRow2 = document.createElement('tr');
-        ['Company', 'Stock buyback/Dividends', 'Capex/New Projects', 'M&A/Divestments', 'Debt trend'].forEach(headerText => {
-          const th = document.createElement('th');
-          th.textContent = headerText;
-          headerRow2.appendChild(th);
-        });
-        thead2.appendChild(headerRow2);
-        table2.appendChild(thead2);
-
-        // Create table body
-        const tbody2 = document.createElement('tbody');
-        companies.forEach(company => {
-          const metrics = companyMetrics[company] || {}; // Use empty object if company not found
-          const row = document.createElement('tr');
-
-          // Company name
-          const tdCompany = document.createElement('td');
-          tdCompany.textContent = company;
-          row.appendChild(tdCompany);
-
-          // Dividends
-          const tdDividends = document.createElement('td');
-          tdDividends.textContent = metrics.stock || 'N/A';
-          row.appendChild(tdDividends);
-
-          // Capex
-          const tdCapex = document.createElement('td');
-          tdCapex.textContent = metrics.capex || 'N/A';
-          row.appendChild(tdCapex);
-
-          // M&A
-          const tdMA = document.createElement('td');
-          tdMA.textContent = metrics.merger || 'N/A';
-          row.appendChild(tdMA);
-
-          // Debt
-          const tdDebt = document.createElement('td');
-          tdDebt.textContent = metrics.debt || 'N/A';
-          row.appendChild(tdDebt);
-
-          tbody2.appendChild(row);
-        });
-        table2.appendChild(tbody2);
-
-        // Add a heading for the second table
-        const table2Heading = document.createElement('h4');
-        table2Heading.className = 'mt-4 mb-3';
-        table2Heading.textContent = 'Financial Metrics and Strategic Initiatives';
-
-        // Append both tables to the sentiment content
-        const sentimentContent = document.getElementById('sentimentContent');
-        sentimentContent.innerHTML = '';
-        sentimentContent.appendChild(table);  // First table (existing sentiment analysis)
-        sentimentContent.appendChild(table2Heading);  // Heading for second table
-        sentimentContent.appendChild(table2);  // Second table (new metrics)
-      } catch (error) {
-        document.getElementById('sentimentContent').innerHTML =
-          `<div class="alert alert-danger">Error analyzing sentiment: ${error.message}</div>`;
-      }
-
-      document.getElementById('sentimentLoading').classList.remove('active');
+    // Handle company selection
+    companySelect.addEventListener('change', () => {
+      const selectedCompany = companySelect.value;
+      renderDocumentList(selectedCompany);
     });
 
-    // Q&A Functionality
-    document.getElementById('askQuestion').addEventListener('click', async () => {
-      const question = document.getElementById('questionInput').value.trim();
-      if (!question) {
-        alert('Please enter a question');
-        return;
-      }
+    function renderDocumentList(company) {
+      documentList.innerHTML = '';
+      documents = []; // Reset documents array
+      if (!company) return;
 
-      // Prepare the context from the files object
-      // const context = JSON.stringify(files);
+      const companyFiles = files[company];
+      Object.keys(companyFiles).forEach(fileName => {
+        const row = document.createElement('div');
+        row.className = 'doc-item';
 
-      try {
-        // const clientFilter2 = document.getElementById('clientFilter2').value;
-        // const competitorFilter2 = document.getElementById('competitorFilter2').value;
-        // const filenameFilter = document.getElementById('filenameFilterQA').value;
-        // // Extract content for the client and competitor based on the selected filename
-        // const clientContent = files[clientFilter2]?.[filenameFilter] || '';
-        // const competitorContent = files[competitorFilter2]?.[filenameFilter] || '';
-
-        // // Construct the context string
-        // const context = JSON.stringify({
-        //   [clientFilter2]: {
-        //     [filenameFilter]: clientContent
-        //   },
-        //   [competitorFilter2]: {
-        //     [filenameFilter]: competitorContent
-        //   }
-        // });
-        // console.log(clientFilter2); console.log(competitorFilter2); console.log(filenameFilter); console.log(context)
-        // const response = await fetch("https://llmfoundry.straive.com/gemini/v1beta/openai/chat/completions", {
-        //   method: "POST",
-        //   headers: { "Content-Type": "application/json" },
-        //   credentials: "include",
-        //   body: JSON.stringify({
-        //     model: "gemini-2.0-pro-exp-02-05", messages: [
-        //       { role: "system", content: `Answer questions about the companies based on their earnings calls, annual reports, Investor day and Financials if provided. Also mention the citations, filenames and page numbers from where the information is taken.` },
-        //       { role: "user", content: question },
-        //       { role: "system", content: `Context: ${context}` }
-        //     ]
-        //   }),
-        // });
-        // const data = await response.json();
-        // const answer = data.choices?.[0]?.message?.content || 'Failed to generate answer';
-
-        const clientFilter2 = document.getElementById('clientFilter2').value;
-        const competitorFilter2 = document.getElementById('competitorFilter2').value;
-        const filenameFilter = document.getElementById('filenameFilterQA').value;
-
-        let context;
-        let userPrompt;
-        let userPrompt2;
-
-        // Condition 1: If none of clientFilter2, competitorFilter2, and filenameFilter has any value
-        if (!clientFilter2 && !competitorFilter2 && !filenameFilter) {
-          context = JSON.stringify(files);
-          userPrompt = `Refer the following files content: ${context}`
-          userPrompt2 = `Answer the following question: ${question}`
-        }
-        // Condition 2: If all of clientFilter2, competitorFilter2, and filenameFilter have values
-        else if (clientFilter2 && competitorFilter2 && filenameFilter) {
-          const clientContent = files[clientFilter2]?.[filenameFilter] || '';
-          const competitorContent = files[competitorFilter2]?.[filenameFilter] || '';
-
-          context = JSON.stringify({
-            [clientFilter2]: {
-              [filenameFilter]: clientContent
-            },
-            [competitorFilter2]: {
-              [filenameFilter]: competitorContent
-            }
-          });
-
-          // Mentioning clientFilter2 and competitorFilter2 in the user prompt
-          // userPrompt = `Consider client company - ${clientFilter2} and competitor company - ${competitorFilter2}. Now, answer the question based on ${filenameFilter}: ${question}`;
-          userPrompt = `Consider client company - ${clientFilter2} and competitor company - ${competitorFilter2}. Refer the following files content which contains content of ${filenameFilter}: ${context}`
-          userPrompt2 = `Answer the following question: ${question}`
-        }
-        // If some filters are provided but not all, you can handle it as needed
-        else {
-          alert('Please make sure either all filters are set to All or none of the filters are set to All before asking a question.')
-          return;
-        }
-
-        document.getElementById('qaLoading').classList.add('active');
-        console.log(context)
-        const response = await fetch("https://llmfoundry.straive.com/gemini/v1beta/openai/chat/completions", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify({
-            model: "gemini-2.0-pro-exp-02-05",
-            messages: [
-              {
-                role: "system", content: `Answer questions about the companies(Enbridge, Pembina, TC Energy) based on their earnings calls(Q4_Earnings_Call_23,Q1_Earnings_Call_24,Q2_Earnings_Call_24,Q3_Earnings_Call_24,Q4_Earnings_Call_24), annual reports(Annual_Report), Investor day(Investor_Day) and Financials(Financial_Cash_Flow,Financial_Balance_Sheet,Financial_Income_Statement) if provided.`
-              },
-              { role: "system", content: `Mention the citations, filenames and page numbers present in file content from where the information is taken. Do not mention these for any Financials content.` },
-              { role: "user", content: userPrompt },
-              { role: "user", content: userPrompt2 }
-            ]
-          }),
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.checked = true; // Default to checked
+        checkbox.classList.add('form-check-input', 'me-2');
+        // Add document to the documents array
+        documents.push({ name: fileName, isChecked: true });
+        checkbox.addEventListener('change', () => {
+          const isChecked = checkbox.checked;
+          // Update the documents array based on checkbox state
+          const doc = documents.find(d => d.name === fileName);
+          if (doc) {
+            doc.isChecked = isChecked;
+          }
+          console.log(`${fileName} is ${isChecked ? 'selected' : 'deselected'}`);
         });
 
-        const data = await response.json();
-        const answer = data.choices?.[0]?.message?.content || 'Failed to generate answer';
+        const label = document.createElement('label');
+        label.textContent = fileName;
+        label.style.flex = '1';
 
-        const qaDiv = document.createElement('div');
-        qaDiv.className = 'mb-4';
-        qaDiv.innerHTML = `
-          <div class="alert alert-secondary">
-              <strong>Q:</strong> ${question}
-          </div>
-          <div class="alert alert-info">
-              <strong>A:</strong> ${marked.parse(answer)}
-          </div>
-      `;
+        row.appendChild(checkbox);
+        row.appendChild(label);
+        documentList.appendChild(row);
+      });
+    }
 
-        document.getElementById('qaContent').insertBefore(qaDiv, document.getElementById('qaContent').firstChild);
-        document.getElementById('questionInput').value = '';
-      } catch (error) {
-        document.getElementById('qaContent').insertBefore(
-          `<div class="alert alert-danger">Error generating answer: ${error.message}</div>`,
-          document.getElementById('qaContent').firstChild
+    /***********************************************
+     * Show Sidebar & Chat After "Start Chat"
+     ***********************************************/
+    startChat.addEventListener('click', () => {
+      startScreen.style.display = 'none';
+      mainContainer.style.display = 'flex';
+      roleInput.style.display = 'block';
+      textDiv.style.display = 'block';
+      roleText.focus();
+    });
+
+    document.getElementById('sampleQuestionsButton').addEventListener('click', () => {
+      const selectedCompany = companySelect.value;
+      if (!selectedCompany) {
+        alert('Please select a company');
+        return; // Exit the function if no company is selected
+      }
+
+      generateSuggestedQuestions();
+    });
+
+    /***********************************************
+     * Generate 3 Suggested Questions
+     ***********************************************/
+    async function generateSuggestedQuestions() {
+      if (!documents.length) {
+        suggestedDiv.innerHTML = '';
+        return;
+      }
+      showLoader(true);
+
+      const selectedCompany = companySelect.value; // Get the selected company
+      const selectedDocuments = documents.filter(d => d.isChecked).map(d => d.name); // Get selected document names
+
+      const promptForQuestions = `
+User has these files from ${selectedCompany}:
+${selectedDocuments}
+
+Suggest 3 possible questions about them as separate lines.
+
+At least one question should involve a topic from all the files.
+
+Just three questions and no bullet points, nothing else.
+    `;
+
+      const payload = {
+        system_instruction: {
+          parts: [{ text: "You are a helpful assistant that generates possible user questions based on file contents." }]
+        },
+        contents: [
+          { role: "user", parts: [{ text: promptForQuestions }] }
+        ],
+        generationConfig: { temperature: 0.5 }
+      };
+
+      try {
+        const resp = await fetch(
+          "https://llmfoundry.straive.com/gemini/v1beta/models/gemini-2.0-flash-001:streamGenerateContent",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify(payload)
+          }
         );
+        const json = await resp.json();
+        let answerText = parseLLMResponse(json);
+        showSuggestedQuestions(answerText);
+      } catch {
+        showSuggestedQuestions("");
+      } finally {
+        showLoader(false);
       }
+    }
 
-      document.getElementById('qaLoading').classList.remove('active');
+    function parseLLMResponse(json) {
+      let answerText = "";
+      if (Array.isArray(json)) {
+        for (const chunk of json) {
+          const cand = chunk.candidates?.[0];
+          if (cand?.content?.parts?.length) {
+            answerText += cand.content.parts.map(p => p.text).join("");
+          }
+        }
+      } else if (json.contents) {
+        const parts = json.contents[0].candidates[0].content.parts;
+        answerText = parts.map(p => p.text).join("");
+      }
+      return answerText.trim();
+    }
+
+    function showSuggestedQuestions(answerText) {
+      suggestedDiv.innerHTML = '';
+      if (!answerText) return;
+
+      const lines = answerText.split('\n').map(l => l.trim()).filter(Boolean);
+      if (!lines.length) return;
+
+      const heading = document.createElement('h6');
+      heading.textContent = "Suggested Questions (click to use):";
+      suggestedDiv.appendChild(heading);
+
+      const ul = document.createElement('ul');
+      ul.classList.add('list-group');
+      lines.forEach(line => {
+        // Make each question a clickable link
+        const li = document.createElement('li');
+        li.classList.add('list-group-item', 'p-1');
+
+        // Create an anchor tag
+        const link = document.createElement('a');
+        link.href = "#";
+        link.textContent = line;
+        link.classList.add('text-decoration-none'); // remove underline if you like
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          chatText.value = line;
+          chatText.focus();
+          // Hide the suggestion box
+          suggestedDiv.innerHTML = '';
+        });
+
+        li.appendChild(link);
+        ul.appendChild(li);
+      });
+      suggestedDiv.appendChild(ul);
+    }
+
+    /***********************************************
+     * Chat Logic
+     ***********************************************/
+    chatText.addEventListener('keyup', (e) => {
+      if (e.key === 'Enter') chatButton.click();
     });
 
-    //Search Functionality
-    document.getElementById('searchKeyword').addEventListener('click', () => {
-      const keyword = document.getElementById('keywordInput').value.trim();
-      const companyFilter = document.getElementById('companyFilter').value;
-      const filenameFilter = document.getElementById('filenameFilter').value;
-
-      if (!keyword) {
-        alert('Please enter a keyword');
-        return;
+    chatButton.addEventListener('click', () => {
+      const selectedCompany = companySelect.value;
+      if (!selectedCompany) {
+        alert('Please select a company');
+        return; // Exit the function if no company is selected
       }
 
-      // Clear previous results
-      document.getElementById('keywordResults').innerHTML = '';
+      const question = chatText.value.trim();
+      if (addToHistory(question, "user")) {
+        replayChat(question);
+        chatText.value = '';
+      }
+      chatText.focus();
+    });
 
-      // Prepare the context from the files object
-      const context = JSON.stringify(files);
-      const sentences = extractRelevantSentences(context, keyword);
+    function addToHistory(message, by) {
+      if (!message) return false;
+      const converter = new showdown.Converter();
+      const msgHtml = converter.makeHtml(message);
 
-      // Filter sentences based on selected filters
-      const filteredSentences = sentences.filter(sentence => {
-        const matchesCompany = companyFilter ? sentence.company === companyFilter : true;
-        const matchesFilename = filenameFilter ? sentence.filename === filenameFilter : true;
-        return matchesCompany && matchesFilename;
+      if (by === 'system') {
+        historyDiv.innerHTML += `
+          <div class="row mb-2">
+            <div class="col-1 text-end"></div>
+            <div class="col-11 system-text">
+              <strong>Answer: </strong>${msgHtml}
+            </div>
+          </div>`;
+      } else {
+        // 'user'
+        historyDiv.innerHTML += `
+          <div class="row mb-2">
+            <div class="col-11 user-text" style="font-weight: bold;">
+              Question: ${msgHtml}
+            </div>
+            <div class="col-1 text-end"></div>
+          </div>`;
+        historyDiv.scrollTop = historyDiv.scrollHeight;
+      }
+      return true;
+    }
+
+    async function replayChat(question) {
+      if (!question) return;
+      let msg = 'Could not get a valid answer.';
+      try {
+        showLoader(true);
+        // const selectedPDFs = documents.filter(d => d.isChecked);
+        // const pdfParts = await convertFilesToInlineData(selectedPDFs);
+        // msg = await getReply(pdfParts, question);
+        const selectedCompany = companySelect.value; // Get the selected company
+        const selectedDocuments = documents.filter(d => d.isChecked).map(d => d.name); // Get selected document names
+        // Log the selected company and documents for debugging
+        const contentParts = await getContentFromFiles(selectedCompany, selectedDocuments); // Get content from files
+        msg = await getReply(contentParts, question);
+      } catch (e) {
+        msg = e.message || msg;
+      } finally {
+        showLoader(false);
+      }
+      addToHistory(msg, "system");
+    }
+
+    async function getContentFromFiles(company, selectedDocuments) {
+      const parts = [];
+      const companyFiles = files[company];
+
+      selectedDocuments.forEach(docName => {
+        if (companyFiles[docName]) {
+          // Add the content of the selected document with its name as a header
+          parts.push({ text: `Filename: ${docName}\n\nFilecontent:${companyFiles[docName]}` }); // Include the file name as a header
+        }
       });
 
-      if (filteredSentences.length === 0) {
-        document.getElementById('keywordResults').innerHTML = `<div class="alert alert-warning">No results found for "${keyword}".</div>`;
-      } else {
-        filteredSentences.forEach(({ sentence, company, filename, page }) => {
-          const resultDiv = document.createElement('div');
-          resultDiv.className = 'alert alert-light';
+      return { company, parts };
+    }
 
-          // Color coding for company and filename
-          const companyColor = '#007bff'; // Example color for company
-          const filenameColor = '#28a745'; // Example color for filename
+    async function getReply(contentData, question) {
+      const { company, parts } = contentData; // Destructure the company and parts from contentData
+      const filecontent = parts.map(part => (part.text));
 
-          // Highlight the keyword in the sentence
-          const highlightedSentence = sentence.replace(new RegExp(`\\b${keyword}\\b`, 'gi'), `<span style="background-color: yellow;">${keyword}</span>`);
+      const systemPrompt = [
+        "Assume the Role you have been provided with text that holds all the necessary information to answer the following question.",
+        "Please try to include data from the text along with the citations or references while answering. Mention the filename and page number.",
+        "If Annual Report file is provided, make sure that information should be provided from other files(if provided) as well rather than from only annual report."
+      ].join('\n');
 
-          resultDiv.innerHTML = `<strong style="color: ${companyColor};">${company}</strong><br><em style="color: ${filenameColor};">${filename}</em><br><strong>Page - ${page}</strong>: ${highlightedSentence}`;
-          document.getElementById('keywordResults').appendChild(resultDiv);
-        });
+      const userPrompt = `Assume your role is Role: ${roleText.value}.\n\n
+      Consider the company is Company: ${company}.\n\n
+      Answer this question: ${question}\n based on the following files: ${filecontent}`
+
+      const response = await fetch("https://llmfoundry.straive.com/gemini/v1beta/openai/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          model: "gemini-2.0-pro-exp-02-05",
+          messages: [
+            {
+              role: "system",
+              content: systemPrompt
+            },
+            {
+              role: "user",
+              content: userPrompt
+            }
+          ],
+        }),
+      });
+
+      const data = await response.json();
+      const answerText = data.choices?.[0]?.message?.content || 'Failed to generate summary';
+
+      if (!answerText) {
+        throw new Error(json.error?.message || 'No content returned.');
       }
-    });
+      return answerText;
+    }
 
-    function extractRelevantSentences(context, keyword) {
-      const data = JSON.parse(context);
-      const sentences = [];
-
-      // Iterate over the keys of the object
-      for (const key of Object.keys(data)) {
-        const entry = data[key];
-        const company = key;
-
-        // Iterate over each property in the entry
-        for (const prop of Object.keys(entry)) {
-          const filename = prop;
-          const text = entry[prop]; // Get the text for the current property
-
-          // Only proceed if text is a non-empty string
-          if (typeof text === 'string' && text.trim() !== '') {
-            // Split the text into pages
-            const pages = text.split(/Page \d+/).filter(Boolean); // Split by "Page X" and filter out empty strings
-
-            // Iterate over each page
-            pages.forEach((pageContent, index) => {
-              const pageNumber = index + 1; // Page numbers start from 1
-              const regex = new RegExp(`[^.]*\\b${keyword}\\b[^.]*\\.`, 'gi'); // Match sentences containing the keyword
-              const matches = pageContent.match(regex);
-              if (matches) {
-                matches.forEach(match => {
-                  sentences.push({ sentence: match, company, filename, page: pageNumber });
-                });
-              }
-            });
+    function parseLLMResponse(json) {
+      let text = "";
+      if (Array.isArray(json)) {
+        for (const chunk of json) {
+          const cand = chunk.candidates?.[0];
+          if (cand?.content?.parts) {
+            text += cand.content.parts.map(p => p.text).join("");
           }
         }
+      } else if (json.contents) {
+        const parts = json.contents[0].candidates[0].content.parts;
+        text = parts.map(p => p.text).join("");
       }
+      return text.trim();
+    }
 
-      return sentences;
+    function showLoader(show) {
+      progressDiv.innerHTML = show ? '<span class="loader"></span>' : '';
+      progressDiv.style.visibility = show ? 'visible' : 'hidden';
     }
   </script>
 </body>
